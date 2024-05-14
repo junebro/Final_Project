@@ -34,7 +34,7 @@ public class BoardController {
             Map<String, Object> response = new HashMap<>();
             response.put("posts", boardPage.getContent());
             response.put("totalCount", boardPage.getTotalElements());
-            // 페이징 정보 포함하여 반환
+            // 페이징 정보 포함하여 반환dd
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             logger.error("페이징 처리된 게시판 목록을 가져오는 데 실패했습니다.", e);
