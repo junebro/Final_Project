@@ -10,7 +10,10 @@ import javax.persistence.*;
 @Entity
 public class Products {
     @Id
-    private int product_id;
-    private String product_name;
-    private double price;
+    private String protp;
+    private String prostp;
+    private String procd;
+    private String pronm;
+    private double propr;
+    private String proimg;
 }
