@@ -1,6 +1,7 @@
 package com.final_project.controller;
 
 import com.final_project.Service.CertificationService;
+import com.final_project.dto.InputData;
 import com.final_project.entity.Item;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +17,7 @@ public class CoolsmsController {
     private CertificationService certificationService;
 
     @PostMapping("/check/sendsms")
-    public @ResponseBody String sendSMS(@RequestBody String phoneNumber) {
+    public @ResponseBody String sendSMS(@RequestBody InputData inputData) {
         Random rand  = new Random();
         String numStr = "";
         for(int i=0; i<4; i++) {
@@ -24,9 +25,9 @@ public class CoolsmsController {
             numStr+=ran;
         }
 
-        System.out.println("수신자 번호 : " + phoneNumber);
+        System.out.println("수신자 번호 : " + inputData.toString());
         System.out.println("인증번호 : " + numStr);
-        certificationService.certifiedPhoneNumber(phoneNumber,numStr);
+        certificationService.certifiedPhoneNumber(inputData.toString(),numStr);
         return numStr;
     }
 
