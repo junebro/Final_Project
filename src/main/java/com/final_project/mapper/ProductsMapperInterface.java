@@ -8,6 +8,6 @@ import java.util.List;
 
 @Mapper
 public interface ProductsMapperInterface {
-    @Select("SELECT * FROM products")
+    @Select("SELECT * FROM tpro")
     List<Products> SelectAll();
 }
