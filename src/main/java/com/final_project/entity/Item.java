@@ -10,9 +10,10 @@ import javax.persistence.*;
 public class Item {
     @Id
     //@GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String  id = "abcdd";
-    private String name = "가나다라";
-    private String description = "12345667878";
+    private String  id ;
+    private String name ;
+    private String description ;
+
 
     // getters and setters
 }
