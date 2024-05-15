@@ -45,10 +45,9 @@ public class MemberService {
     public class LoginService {
 
         private final MemberRepository memberRepository;
-
+        // 준형 수정 findByMemEmail
         public Optional<Member> findOne(String mememail) {
-            return memberRepository.findByUserId(mememail);
+            return memberRepository.findByMemEmail(mememail);
         }
-
     }
 }
