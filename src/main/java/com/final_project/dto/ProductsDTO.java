@@ -1,34 +1,22 @@
-package com.final_project.entity;
+package com.final_project.dto;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.*;
-
+@Data
 @Getter
 @Setter
-@Entity
-public class Products {
-    @Id
+public class ProductsDTO {
     private String protp;
     private String prostp;
     private String procd;
     private String pronm;
     private double propr;
     private String proimg;
-
-    // 상품 상세 영역
-    // 나중에 수정해야됨
     private String pifimg1;
     private String pifimg2;
     private String pifimg3;
-//    @Lob
-//    private byte[] pifimg1;
-//    @Lob
-//    private byte[]  pifimg2;
-//    @Lob
-//    private byte[] pifimg3;
-
     private double piftt;
     private double pifcal;
     private double pifna;
