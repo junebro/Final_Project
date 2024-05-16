@@ -16,7 +16,8 @@ public interface BoardMapperInterface {
     List<Board> SelectAll();
 
     // no 컬럼은 auto increment 옵션에 의하여 자동으로 채워진다.
-    @Insert("INSERT INTO boards (mbrno, botitle, bocontent) VALUES (#{board.mbrno}, #{board.botitle}, #{board.bocontent}) ")
+    // NOW()는 MySQL의 현재 시간을 반환하는 함수
+    @Insert("INSERT INTO boards (mbrno, botitle, bocontent, BO_CREATE_AT) VALUES (#{board.mbrno}, #{board.botitle}, #{board.bocontent}, #{board.BO_CREATE_AT})")
     int Insert(@Param("board") final Board board);
 
     @Select("select * from boards where bono = #{bono} ") // 게시물 상세보기
