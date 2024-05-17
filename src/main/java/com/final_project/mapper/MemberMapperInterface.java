@@ -10,9 +10,9 @@ import org.apache.ibatis.annotations.Select;
 @Mapper
 public interface MemberMapperInterface {
     // 회원가입
-    @Insert("INSERT INTO B_MEMBER (MEMEMAIL, MEMPW, MEMBERNICK, MEMPHONE, MEMADDRESS) " +
-            "VALUES (#{memEmail}, #{memPw}, #{memberNick}, #{memPhone}, #{memAddress})")
-    void insertMember(MemberDTO member);
+    @Insert("INSERT INTO B_MEMBER (MEMEMAIL, MEMPW, MEMBERNICK, MEMADDRESS, DISNO)" +
+            "VALUES (#{member.memEmail}, #{member.memPw}, #{member.memberNick}, #{member.memAddress}, 1)")
+    void insertMember(@Param("member") MemberDTO member);
 
     // 이메일 중복 검사
     @Select("SELECT COUNT(*) FROM B_MEMBER WHERE MEMEMAIL = #{newEmail}")

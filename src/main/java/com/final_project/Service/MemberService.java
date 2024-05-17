@@ -1,6 +1,7 @@
 package com.final_project.Service;
 
 import com.final_project.dto.MemberDTO;
+import com.final_project.entity.Board;
 import com.final_project.entity.Member;
 import com.final_project.mapper.MemberMapperInterface;
 import com.final_project.repository.MemberRepository;
@@ -24,13 +25,15 @@ public class MemberService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    // 회원가입
     @Transactional
     public void registerNewMember(MemberDTO memberDTO) {
+
         // 비밀번호 암호화
         String encodedPassword = passwordEncoder.encode(memberDTO.getMemPw());
         memberDTO.setMemPw(encodedPassword);
-
-        // 회원 정보 DB에 저장
+        memberDTO.setDisNo(1);
+        // MemberDTO를 Member로 변환하여 매퍼에 전달
         memberMapper.insertMember(memberDTO);
     }
 
@@ -56,4 +59,7 @@ public class MemberService {
             return memberRepository.findByMemEmail(mememail);
         }
     }
+
+    // 회원가입
+  
 }

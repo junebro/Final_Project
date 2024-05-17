@@ -35,8 +35,7 @@ public class BoardService {
         return bmi.SelectAll();
     }
 
-    public int Insert(Board board) {
-        return bmi.Insert(board);
+    public int Insert(Board board) {return bmi.Insert(board);
     }
 
     public Board SelectOne(Integer bono){
