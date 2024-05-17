@@ -10,13 +10,16 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class BoardService {
     private final BoardMapperInterface bmi;
+    private final FileService fileService;
     private static final Logger logger = LoggerFactory.getLogger(BoardService.class);
 
     // 페이징 처리된 리스트 조회
@@ -44,13 +47,33 @@ public class BoardService {
         return boards;
     }
 
-    public int Insert(Board board) {
+    // 게시물 등록
+    public int Insert(Board board, MultipartFile[] files) throws IOException {
+        for (MultipartFile file : files) {
+            if (file != null && !file.isEmpty()) {
+                String imageName = saveFile(file);
+                if (board.getBoimage01() == null) {
+                    board.setBoimage01(imageName);
+                    board.setThumb_boimage01(fileService.uploadThumbnailFile(imageName));
+                } else if (board.getBoimage02() == null) {
+                    board.setBoimage02(imageName);
+                    board.setThumb_boimage02(fileService.uploadThumbnailFile(imageName));
+                } else if (board.getBoimage03() == null) {
+                    board.setBoimage03(imageName);
+                    board.setThumb_boimage03(fileService.uploadThumbnailFile(imageName));
+                }
+            }
+        }
         logger.info("Inserting a new board with title: {}", board.getBotitle());
-        int result = bmi.Insert(board);
-        logger.info("Insert result: {}", result);
-        return result;
+        return bmi.Insert(board);
     }
 
+    // 파일을 저장하고 파일 이름을 반환하는 메소드
+    private String saveFile(MultipartFile file) throws IOException {
+        return fileService.uploadFile(file);
+    }
+
+    // 게시물 조회
     public Board SelectOne(Integer bono){
         logger.info("Fetching board with ID: {}", bono);
         Board board = bmi.SelectOne(bono);
@@ -58,17 +81,43 @@ public class BoardService {
         return board;
     }
 
-    public int Update(Board board) {
-        logger.info("Updating board with ID: {}", board.getBono());
+    // 게시물 수정
+    public int Update(Board board, MultipartFile[] files) throws IOException {
+        for (MultipartFile file : files) {
+            if (file != null && !file.isEmpty()) {
+                String imageName = saveFile(file);
+                if (board.getBoimage01() == null) {
+                    board.setBoimage01(imageName);
+                    board.setThumb_boimage01(fileService.uploadThumbnailFile(imageName));
+                } else if (board.getBoimage02() == null) {
+                    board.setBoimage02(imageName);
+                    board.setThumb_boimage02(fileService.uploadThumbnailFile(imageName));
+                } else if (board.getBoimage03() == null) {
+                    board.setBoimage03(imageName);
+                    board.setThumb_boimage03(fileService.uploadThumbnailFile(imageName));
+                }
+            }
+        }
+        logger.info("Updating board with ID: {}, Title: {}, Images: {}, {}, {}", board.getBono(), board.getBotitle(), board.getBoimage01(), board.getBoimage02(), board.getBoimage03());
         int result = bmi.Update(board);
         logger.info("Update result for board ID {}: {}", board.getBono(), result);
         return result;
     }
 
+    //게시물 삭제
     public int Delete(Integer bono) {
         logger.info("Deleting board with ID: {}", bono);
         int result = bmi.Delete(bono);
         logger.info("Delete result for board ID {}: {}", bono, result);
         return result;
     }
+
+//    // 댓글 리스트
+//    public List<BoardDto> getCommentList(BoardDto bdto);
+//    // 내가 쓴 글 조회
+//    public List<BoardDto> getMypost(BoardDto bdto);
+//    // 내가 쓴 글의 개수를 조회
+//    public int selectMyPostTotalCount(BoardDto bdto);
+//    // 댓글 수 조회
+//    public int commentCnt(Long postno);
 }
