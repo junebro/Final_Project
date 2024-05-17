@@ -11,7 +11,7 @@ import java.sql.Date;
 @Entity
 @Table(name = "B_MEMBER")
 public class Member {
-
+    // 인증은 이메일이랑 비번으로 진행할 것
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "MEMNO")
@@ -26,18 +26,22 @@ public class Member {
     @Column(name = "MEMBERNICK", length = 30)
     private String memberNick;
 
-    @Column(name = "MEMPHONE", length = 11)
-    private String memPhone;
+//    @Column(name = "MEMPHONE", length = 11)
+//    private String memPhone;
 
     @Column(name = "MEMADDRESS", length = 255)
     private String memAddress;
 
-    @Column(name = "SNSLOGIN", length = 2)
-    private String snsLogin;
+    @Column(name = "DISNO")
+    private int disNo;
 
-    @Column(name = "ENROLLDATE")
-    private Date enrollDate;
+//    @Column(name = "SNSLOGIN", length = 2)
+//    private String snsLogin;
+//
+//    @Column(name = "ENROLLDATE")
+//    private Date enrollDate;
+//
+//    @Column(name = "SESSION_FL", length = 2)
+//    private String sessionFl;
 
-    @Column(name = "SESSION_FL", length = 2)
-    private String sessionFl;
 }

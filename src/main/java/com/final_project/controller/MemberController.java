@@ -28,12 +28,13 @@ public class MemberController {
     @PostMapping("/member/join")
 //    public String registerNewMember(@RequestBody MemberDTO memberDTO) {
     public ResponseEntity<?> registerNewMember(@RequestBody MemberDTO memberDTO) {
-        //memberService.registerNewMember(memberDTO);
+        System.out.println(memberDTO);
         try {
-            System.out.println("1`23123123123213");
+            memberService.registerNewMember(memberDTO);
+            //return "redirect:/login"; // 회원가입 성공 시 로그인 페이지로 리다이렉트
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("데이터를 가져오는 데 실패했습니다.");
-            //return "redirect:/login"; // 회원가입 성공 시 로그인 페이지로 리다이렉트
+
         }
         return null;
     }
