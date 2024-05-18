@@ -48,7 +48,6 @@ public class JwtTokenProvider {
                 .setSubject(authentication.getName())
                 .claim("auth", authorities)
                 .setExpiration(accessTokenExpiresIn)
-                // .signWith(key, SignatureAlgorithm.HS256)
                 .signWith(SignatureAlgorithm.HS256, key)
                 .compact();
 
