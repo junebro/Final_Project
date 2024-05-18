@@ -1,5 +1,6 @@
 package com.final_project.Service;
 
+import com.final_project.entity.Member;
 import com.final_project.entity.Products;
 import com.final_project.mapper.ProductsMapperInterface;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +13,7 @@ import java.util.List;
 public class ProductsService {
     private final ProductsMapperInterface pmi;
 
-    public List<Products> SelectAll(){
-        return pmi.SelectAll();
+    public List<Products> SelectAll(String userNo) {
+        return pmi.SelectAll(userNo);
     }
 }

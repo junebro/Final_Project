@@ -39,4 +39,7 @@ public class Products {
     private double pifsat;
     private double pifclt;
     private double pifprt;
+    
+    // 장바구니 체크
+    private String crtck;
 }
