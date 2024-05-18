@@ -18,77 +18,54 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 
-//수정 중
+
 @Configuration
 @Slf4j
 @EnableWebSecurity
-public class SecurityConfig {
-//    private final JwtTokenProvider jwtTokenProvider;
-//
-//    public SecurityConfig(JwtTokenProvider jwtTokenProvider) {
-//        this.jwtTokenProvider = jwtTokenProvider;
-//    }
-//
-//    @Bean
-//    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-//        http
-//                // 일반적인 웹 보안 설정
-//                .csrf().disable()
-//                .cors()
-//                .and()
-//                .formLogin()
-//                .loginPage("/member/login")
-//                .defaultSuccessUrl("/")
-//                .usernameParameter("email")
-//                .failureUrl("/member/login/error")
-//                .and()
-//                .logout()
-//                .logoutRequestMatcher(new AntPathRequestMatcher("/member/logout"))
-//                .logoutSuccessUrl("/")
-//                .and()
-//                // JWT를 사용하기 때문에 세션을 사용하지 않음
-//                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-//                .and()
-//                .authorizeRequests()
-//                // 회원가입 및 로그인 페이지는 모두 접근 가능
-//                .antMatchers("/members/sign-in", "/member/login", "/member/login/error").permitAll()
-//                // 특정 역할이 필요한 API 접근 설정
-//                .antMatchers("/members/test").hasRole("USER")
-//                // 그 외의 모든 요청은 인증이 필요함
-//                .anyRequest().authenticated()
-//                .and()
-//                // JWT 인증 필터 추가
-//                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
-//
-//        return http.build();
-//    }
-//
-//    @Bean
-//    public PasswordEncoder passwordEncoder() {
-//        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
-//    }
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+public class SecurityConfig extends WebSecurityConfigurerAdapter{
+
+    private final JwtTokenProvider jwtTokenProvider;
+
+    public SecurityConfig(JwtTokenProvider jwtTokenProvider) {
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+
+
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
         http
+                .httpBasic().disable()
                 .csrf().disable() // PostMapping시 필요
-                .cors()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .cors() // CORS 활성화
+                .and()
+                .authorizeRequests()
+                // 해당 API에 대해서는 모든 요청을 허가
+                .antMatchers("/join/**").permitAll()
+                .antMatchers("/board/**").permitAll()
+                .antMatchers("/products/**").permitAll()
+                .antMatchers("/join/member/test").hasRole("USER")
+                // 이 밖에 모든 요청에 대해서 인증을 필요로 한다는 설정
+                .anyRequest().authenticated()
                 .and()
                 .formLogin()
-                .loginPage("/member/login")
-                .defaultSuccessUrl("/")
-                .usernameParameter("email")
+                .defaultSuccessUrl("/", true) // 로그인 성공 후 리디렉션 제어
+                .usernameParameter("memEmail")
+                .passwordParameter("memPw")
                 .failureUrl("/member/login/error")
                 .and()
                 .logout()
                 .logoutRequestMatcher(new AntPathRequestMatcher("/member/logout"))
-                .logoutSuccessUrl("/");
+                .logoutSuccessUrl("/")
+                .permitAll()
+                .and()
+                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
+    }
 
-        return http.build();
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder(); // 비밀번호 암호화를 위한 Bcrypt 암호화 컴포넌트 Bean 등록
     }
 }
-
