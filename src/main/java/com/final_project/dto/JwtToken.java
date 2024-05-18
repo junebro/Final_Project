@@ -1,12 +1,12 @@
 package com.final_project.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
 
 @Builder
 @Data
 @AllArgsConstructor
+@Getter
+@Setter
 public class JwtToken {
     private String grantType; // JWT에 대한 인증타입
     private String accessToken;
