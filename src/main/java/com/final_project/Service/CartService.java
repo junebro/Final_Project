@@ -15,6 +15,10 @@ import java.util.List;
 public class CartService {
     private final CartMapperInterface cmi;
 
+    public List<Cart> Select(int userNo) {
+        return cmi.Select(userNo);
+    }
+
     public int Insert(Cart cart) {
         return cmi.Insert(cart);
     }

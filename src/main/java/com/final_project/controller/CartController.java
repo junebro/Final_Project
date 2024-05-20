@@ -23,6 +23,13 @@ public class CartController {
     private static final Logger logger = LoggerFactory.getLogger(CartController.class);
     private final CartService cs;
 
+    @GetMapping(value = "/cartselect/{userNo}")
+    public ResponseEntity<List<Cart>> SelectAll(@PathVariable int userNo) {
+        List<Cart> cartList = cs.Select(userNo);
+
+        return ResponseEntity.ok(cartList);
+    }
+
     @PostMapping("/cartinsert")
     public ResponseEntity<?> createCart(@RequestBody Cart cart) {
         try {
@@ -56,4 +63,5 @@ public class CartController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error processing your request");
         }
     }
+
 }
