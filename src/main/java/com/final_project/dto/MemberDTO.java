@@ -10,6 +10,7 @@ import lombok.ToString;
 @Setter
 @ToString
 public class MemberDTO {
+    private Integer memNo;
     private String memEmail;
     private String memPw;
     private String memberNick;
