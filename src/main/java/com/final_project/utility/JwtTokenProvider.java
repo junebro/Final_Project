@@ -15,6 +15,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
+import java.security.Key;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
@@ -113,6 +114,25 @@ public class JwtTokenProvider {
                     .getBody();
         } catch (ExpiredJwtException e) {
             return e.getClaims();
+        }
+    }
+
+    @Value("${jwt.secret}")
+    private String secretKey;
+
+    // 토큰에서 사용자 ID 추출
+    public String getUserIdFromToken(String token) {
+
+        String tokenString = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyMSIsImF1dGgiOiIiL…2MDN9.jLkjdtATDkVMfW-2jnWKfsRviX0neaiXsUA_rz0RmXs";
+
+        try {
+            Key key = Keys.hmacShaKeyFor(secretKey.getBytes());
+            JwtParser parser = Jwts.parserBuilder().setSigningKey(key).build();
+            Jws<Claims> claimsJws = parser.parseClaimsJws(token);
+            return claimsJws.getBody().getSubject(); // 'subject' 클레임을 사용자 ID로 사용
+        } catch (Exception e) {
+            System.err.println("Invalid token");
+            return null;
         }
     }
 }

@@ -29,12 +29,14 @@ public class MemberController {
     private final PasswordEncoder passwordEncoder;
     private final CustomUserDetailsService userDetailsService;
     private final JwtTokenProvider jwtTokenProvider;
+    private final JwtTokenProvider getUserIdFromToken;
     @Autowired
-    public MemberController(MemberService memberService, PasswordEncoder passwordEncoder, CustomUserDetailsService userDetailsService, JwtTokenProvider jwtTokenProvider) {
+    public MemberController(MemberService memberService, PasswordEncoder passwordEncoder, CustomUserDetailsService userDetailsService, JwtTokenProvider jwtTokenProvider, JwtTokenProvider getUserIdFromToken) {
         this.memberService = memberService;
         this.passwordEncoder = passwordEncoder;
         this.userDetailsService = userDetailsService;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.getUserIdFromToken = getUserIdFromToken;
     }
 
 
@@ -75,12 +77,14 @@ public class MemberController {
     }
 
 
+
+
     @PostMapping("/member/login")
     public JwtToken signIn(@RequestBody Member member) {
 
         String username = member.getMemEmail();
         String password = member.getMemPw();
-        System.out.println("MemberController");
+
         // 데이터베이스에서 사용자 정보를 불러오기
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
         if (userDetails == null) {
@@ -98,6 +102,15 @@ public class MemberController {
 
             // JwtToken 생성
             JwtToken jwtToken = jwtTokenProvider.generateToken(authentication);
+
+//            String tokenString = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyMSIsImF1dGgiOiIiL…zMTV9.VKtAf_fWJogGaSTMfDaaJ2HjX54PMMmTHqE5EgAaopg";
+//
+//            // 추출한 토큰을 사용하여 사용자 ID를 추출합니다.
+//            String bb = jwtTokenProvider.getUserIdFromToken(tokenString);
+//            System.out.println("토큰토큰토큰토큰토큰토큰토큰토큰토큰토큰토큰토큰토큰토큰토큰토큰토큰토큰");
+//            System.out.println(bb);
+//            System.out.println("토큰토큰토큰토큰토큰토큰토큰토큰토큰토큰토큰토큰토큰토큰토큰토큰토큰토큰");
+
             return jwtToken;
         } else {
             throw new BadCredentialsException("Invalid password");
