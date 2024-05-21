@@ -32,6 +32,8 @@ public class CartController {
 
     @PostMapping("/cartinsert")
     public ResponseEntity<?> createCart(@RequestBody Cart cart) {
+        System.out.println("cart");
+        System.out.println(cart);
         try {
             // 비즈니스 로직 실행
             int cnt = cs.Insert(cart);
