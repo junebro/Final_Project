@@ -15,6 +15,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
+import java.security.Key;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
@@ -66,17 +67,38 @@ public class JwtTokenProvider {
 
     // Jwt 토큰을 복호화하여 토큰에 들어있는 정보를 꺼내는 메서드
     public Authentication getAuthentication(String accessToken) {
-        // Jwt 토큰 복호화
-        Claims claims = parseClaims(accessToken);
+        if (accessToken == null || accessToken.trim().isEmpty()) {
+            throw new RuntimeException("토큰이 제공되지 않았습니다.");
+        }
 
-        if (claims.get("auth") == null) {
+        Claims claims;
+        try {
+            claims = parseClaims(accessToken);
+        } catch (Exception e) {
+            throw new RuntimeException("토큰 파싱 중 오류가 발생했습니다.", e);
+        }
+        System.out.println("getAuthentication");
+        System.out.println(claims);
+        String authInfo = claims.get("auth", String.class);
+
+        if (authInfo == null) {
             throw new RuntimeException("권한 정보가 없는 토큰입니다.");
         }
 
+        // 빈 문자열인 경우도 체크
+        if (authInfo.isEmpty()) {
+            throw new RuntimeException("권한 정보가 유효하지 않습니다.");
+        }
+
         // 클레임에서 권한 정보 가져오기
-        Collection<? extends GrantedAuthority> authorities = Arrays.stream(claims.get("auth").toString().split(","))
+        Collection<? extends GrantedAuthority> authorities = Arrays.stream(authInfo.split(","))
+                .filter(auth -> !auth.isEmpty()) // 빈 문자열 필터링
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
+
+        if (authorities.isEmpty()) {
+            throw new RuntimeException("유효한 권한 정보가 포함되어 있지 않습니다.");
+        }
 
         // UserDetails 객체를 만들어서 Authentication return
         UserDetails principal = new User(claims.getSubject(), "", authorities);
@@ -113,6 +135,25 @@ public class JwtTokenProvider {
                     .getBody();
         } catch (ExpiredJwtException e) {
             return e.getClaims();
+        }
+    }
+
+    @Value("${jwt.secret}")
+    private String secretKey;
+
+    // 토큰에서 사용자 ID 추출
+    public String getUserIdFromToken(String token) {
+
+        String tokenString = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyMSIsImF1dGgiOiIiL…2MDN9.jLkjdtATDkVMfW-2jnWKfsRviX0neaiXsUA_rz0RmXs";
+
+        try {
+            Key key = Keys.hmacShaKeyFor(secretKey.getBytes());
+            JwtParser parser = Jwts.parserBuilder().setSigningKey(key).build();
+            Jws<Claims> claimsJws = parser.parseClaimsJws(token);
+            return claimsJws.getBody().getSubject(); // 'subject' 클레임을 사용자 ID로 사용
+        } catch (Exception e) {
+            System.err.println("Invalid token");
+            return null;
         }
     }
 }

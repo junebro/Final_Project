@@ -18,11 +18,13 @@ import java.util.stream.Collectors;
 @Entity
 @Table(name = "B_MEMBER")
 public class Member implements UserDetails {
+
+
     // 인증은 이메일이랑 비번으로 진행할 것
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "MEMNO")
-    private int memNo;
+    private String memNo;
 
     @Column(name = "MEMEMAIL", length = 50)
     private String memEmail;
@@ -58,7 +60,7 @@ public class Member implements UserDetails {
 
     @Override
     public String getUsername() {
-        return memEmail;
+        return memNo;
     }
 
     @Override
