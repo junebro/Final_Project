@@ -166,7 +166,8 @@ public class BoardController {
         }
     }
 
-    @GetMapping(value = "/boardDelete/{bono}") // 삭제하기
+    // 게시물 삭제
+    @DeleteMapping(value = "/boardDelete/{bono}")
     public ResponseEntity<?> Delete(@PathVariable("bono") Integer bono){
         try {
             int cnt = bs.Delete(bono);

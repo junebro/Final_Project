@@ -64,8 +64,6 @@ public class FileService {
     }
 
 
-    // 이미지 파일 업로드
-
 
     // 이미지 파일 삭제
     public boolean deleteFile(String filename) {

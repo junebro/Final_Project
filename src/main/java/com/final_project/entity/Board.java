@@ -26,4 +26,8 @@ public class Board {
     private String thumb_boimage01;
     private String thumb_boimage02;
     private String thumb_boimage03;
+
+    private Integer commentCount; // 댓글수
+    private Integer likeCount; // 좋아요수
+    private Integer viewCount; //조회수
 }
