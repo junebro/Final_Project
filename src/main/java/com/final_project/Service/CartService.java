@@ -1,10 +1,8 @@
 package com.final_project.Service;
 
-import com.final_project.entity.Board;
+
 import com.final_project.entity.Cart;
-import com.final_project.entity.Products;
 import com.final_project.mapper.CartMapperInterface;
-import com.final_project.mapper.ProductsMapperInterface;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

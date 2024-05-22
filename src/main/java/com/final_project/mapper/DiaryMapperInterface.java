@@ -1,7 +1,6 @@
 package com.final_project.mapper;
 
-import com.final_project.entity.Board;
-import com.final_project.entity.Cart;
+
 import com.final_project.entity.Diary;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;

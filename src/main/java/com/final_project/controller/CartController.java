@@ -1,11 +1,7 @@
 package com.final_project.controller;
 
-import com.final_project.Service.BoardService;
 import com.final_project.Service.CartService;
-import com.final_project.Service.ProductsService;
-import com.final_project.entity.Board;
 import com.final_project.entity.Cart;
-import com.final_project.entity.Products;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
