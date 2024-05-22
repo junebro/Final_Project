@@ -47,6 +47,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                 .antMatchers("/board/**").permitAll()
                 .antMatchers("/products/**").permitAll()
                 .antMatchers("/cart/**").permitAll()
+                .antMatchers("/diary/**").permitAll()
                 .antMatchers("/join/member/test").hasRole("USER")
                 // 이 밖에 모든 요청에 대해서 인증을 필요로 한다는 설정
                 .anyRequest().authenticated()
