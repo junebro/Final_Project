@@ -27,8 +27,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
-
-
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
@@ -48,6 +46,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                 .antMatchers("/join/member/test").hasRole("USER")
 
                 .antMatchers("/uploads/**").permitAll()
+                .antMatchers("/userchat/**", "/adminchat/**").permitAll() // WebSocket 경로 접근 허용
 
                 // 이 밖에 모든 요청에 대해서 인증을 필요로 한다는 설정
                 .anyRequest().authenticated()
