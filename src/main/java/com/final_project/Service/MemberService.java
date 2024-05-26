@@ -1,6 +1,5 @@
 package com.final_project.Service;
 import com.final_project.dto.MemberDTO;
-import com.final_project.entity.Member;
 import com.final_project.mapper.MemberMapperInterface;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,12 +24,16 @@ public class MemberService {
     @Transactional
     public void registerNewMember(MemberDTO memberDTO) {
 
-        System.out.println("암호화");
-        System.out.println(memberDTO.getMemPw());
         String encodedPassword = passwordEncoder.encode(memberDTO.getMemPw());
-        Member member = new Member();
+
+        MemberDTO member = new MemberDTO();
         member.setMemEmail(memberDTO.getMemEmail());
         member.setMemPw(encodedPassword); // 암호화된 비밀번호 저장
+        member.setMemtype(memberDTO.getMemtype());
+        member.setMemberNick(memberDTO.getMemberNick());
+        member.setMemAddress(memberDTO.getMemAddress());
+        member.setDetailAddress(memberDTO.getDetailAddress());
+        member.setZonecode(memberDTO.getZonecode());
         memberMapper.insertMember(member);
     }
 

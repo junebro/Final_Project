@@ -1,6 +1,5 @@
 package com.final_project.mapper;
 
-import com.final_project.entity.Member;
 import com.final_project.entity.Products;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;

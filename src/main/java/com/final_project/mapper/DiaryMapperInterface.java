@@ -2,10 +2,7 @@ package com.final_project.mapper;
 
 
 import com.final_project.entity.Diary;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -13,10 +10,10 @@ import java.util.List;
 public interface DiaryMapperInterface {
 
     @Select(value = "SELECT \n" +
-                                " A.*, B.mood, b.moodimg \n" +
-                                " FROM b_diary a \n" +
-                                " LEFT OUTER JOIN b_sticker b ON a.moodcode = b.moodcode\n" +
-                                " WHERE a.memno = #{memno};")
+            " A.*, B.mood, b.moodimg \n" +
+            " FROM tdiary a \n" +
+            " LEFT OUTER JOIN sticker b ON a.moodcode = b.moodcode\n" +
+            " WHERE a.memno = #{memno};")
     List<Diary> SelectAll(@Param("memno") String memno);
 
 
@@ -38,4 +35,12 @@ public interface DiaryMapperInterface {
     @Insert("INSERT INTO B_DIARY  (diaryno,  memno, diarydetail, diarydate, moodcode) \n" +
                     "VALUES(#{diary.diaryno}, #{diary.memno}, #{diary.diarydetail}, #{diary.diarydate} ,  #{diary.moodcode})")
     int Insert(@Param("diary") final Diary diary);
+
+    // 일기 삭제
+    @Delete("DELETE FROM b_diary WHERE diaryno = #{diaryno}")
+    int Delete(@Param("diaryno") Integer diaryno);
+
+    // 일기 수정
+    @Update("UPDATE b_diary SET diarydetail = #{diary.diarydetail}, moodcode = #{diary.moodcode} where diaryno = #{diary.diaryno};")
+    int Update(@Param("diary") final Diary diary);
 }

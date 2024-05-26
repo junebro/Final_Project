@@ -1,8 +1,7 @@
 package com.final_project.Service;
 
-import com.final_project.entity.Member;
+import com.final_project.dto.MemberDTO;
 import com.final_project.mapper.MemberMapperInterface;
-//import com.final_project.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,7 +19,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String memEmail) throws UsernameNotFoundException {
-        Member member = userMapper.findByEmail(memEmail);
+        MemberDTO member = userMapper.findByEmail(memEmail);
         if (member == null) {
             throw new UsernameNotFoundException("해당하는 회원을 찾을 수 없습니다.");
         }
@@ -28,11 +27,10 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
     // 해당하는 User 의 데이터가 존재한다면 UserDetails 객체로 만들어서 return
-    private UserDetails createUserDetails(Member member) {
+    private UserDetails createUserDetails(MemberDTO member) {
         return User.builder()
                 .username(member.getUsername())
                 .password(member.getMemPw())
-                .roles(member.getRoles().toArray(new String[0]))
                 .build();
     }
 

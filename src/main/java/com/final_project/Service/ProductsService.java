@@ -1,6 +1,5 @@
 package com.final_project.Service;
 
-import com.final_project.entity.Member;
 import com.final_project.entity.Products;
 import com.final_project.mapper.ProductsMapperInterface;
 import lombok.RequiredArgsConstructor;
