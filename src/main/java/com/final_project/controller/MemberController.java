@@ -4,7 +4,7 @@ import com.final_project.Service.CustomUserDetailsService;
 import com.final_project.Service.MemberService;
 import com.final_project.dto.JwtToken;
 import com.final_project.dto.MemberDTO;
-import com.final_project.entity.Member;
+
 import com.final_project.utility.JwtTokenProvider;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -80,7 +80,7 @@ public class MemberController {
 
 
     @PostMapping("/member/login")
-    public JwtToken signIn(@RequestBody Member member) {
+    public JwtToken signIn(@RequestBody MemberDTO member) {
 
         String username = member.getMemEmail();
         String password = member.getMemPw();

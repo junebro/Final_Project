@@ -25,7 +25,6 @@ public class DiaryController {
     @GetMapping(value = "/diaryList/{memno}")
     public ResponseEntity<?> SelectAll(@PathVariable String memno) {
 
-        System.out.println("11111111111111111111");
         try {
 
             List<Diary> diaryList = ds.SelectAll(memno);
@@ -59,7 +58,7 @@ public class DiaryController {
         }
     }
 
-    // 다이어리 등록
+    // 일기 등록
     @PostMapping("/diaryInsert")
     public ResponseEntity<?> createBoard(@RequestBody Diary diary) {
         try {
@@ -72,6 +71,39 @@ public class DiaryController {
             }
         } catch (Exception e) {
             logger.error("Error during board insertion", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error processing your request");
+        }
+    }
+
+    // 일기 삭제
+    @DeleteMapping(value = "/diarydelete/{diaryno}")
+    public ResponseEntity<?> deleteDiary(@PathVariable("diaryno") int diaryno){
+        System.out.println("Deleting diary entry with ID: " + diaryno);
+        try {
+            int cnt = ds.Delete(diaryno);
+            if(cnt == 1){
+                return ResponseEntity.ok("Delete successful");
+            } else {
+                throw new Exception("Delete failed");
+            }
+        } catch (Exception e) {
+            logger.error("게시물 삭제 중 오류가 발생했습니다.", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error processing your request");
+        }
+    }
+
+    // 일기 수정
+    @PostMapping(value = "/diaryUpdate")
+    public ResponseEntity<?> updateDiary(@RequestBody Diary diary){
+        try {
+            int cnt = ds.Update(diary);
+            if(cnt == 1){
+                return ResponseEntity.ok("Update successful");
+            } else {
+                throw new Exception("Update failed");
+            }
+        } catch (Exception e) {
+            logger.error("일기 수정 중 오류가 발생했습니다.", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error processing your request");
         }
     }
