@@ -1,8 +1,6 @@
 package com.final_project.mapper;
 
-import com.final_project.entity.Board;
-import com.final_project.entity.Cart;
-import com.final_project.entity.Products;
+import com.final_project.dto.CartDTO;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -20,11 +18,11 @@ public interface CartMapperInterface {
                     " LEFT OUTER JOIN tpro B ON A.crtcd = B.procd\n" +
                     " LEFT OUTER JOIN tpif C ON B.procd = C.procd\n" +
                     " WHERE A.mbrno = #{userNo};")
-    List<Cart> Select(@Param("userNo") int userNo);
+    List<CartDTO> Select(@Param("userNo") int userNo);
 
     @Insert("INSERT INTO tcrt (mbrno, crtcd, crtqt) VALUES (#{cart.mbrno}, #{cart.crtcd}, #{cart.crtqt})")
-    int Insert(@Param("cart") Cart cart);
+    int Insert(@Param("cart") CartDTO cart);
 
     @Insert("DELETE FROM tcrt WHERE mbrno = #{cart.mbrno} AND crtcd = #{cart.crtcd}")
-    int Delete(@Param("cart") Cart cart);
+    int Delete(@Param("cart") CartDTO cart);
 }

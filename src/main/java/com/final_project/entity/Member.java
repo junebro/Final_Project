@@ -16,29 +16,19 @@ import java.util.stream.Collectors;
 @Getter
 @Setter
 @Entity
-@Table(name = "B_MEMBER")
 public class Member implements UserDetails {
 
 
     // 인증은 이메일이랑 비번으로 진행할 것
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "MEMNO")
     private String memNo;
-
-    @Column(name = "MEMEMAIL", length = 50)
     private String memEmail;
-
-    @Column(name = "MEMPW", length = 100)
     private String memPw;
-
-    @Column(name = "MEMBERNICK", length = 30)
     private String memberNick;
-
-    @Column(name = "MEMADDRESS", length = 255)
     private String memAddress;
-
-    @Column(name = "DISNO")
+    private String detailAddress;
+    private String zonecode;
     private int disNo;
 
     // UserDetails 메서드 구현

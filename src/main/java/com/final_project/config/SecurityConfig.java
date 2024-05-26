@@ -36,24 +36,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .httpBasic().disable()
-                .csrf().disable() // PostMapping시 필요
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .csrf().disable() // CSRF 보호 비활성화
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 세션을 사용하지 않음
                 .and()
-                .cors() // CORS 활성화
+                .cors() // CORS 설정
                 .and()
                 .authorizeRequests()
-                // 해당 API에 대해서는 모든 요청을 허가
-                .antMatchers("/join/**").permitAll()
-                .antMatchers("/board/**").permitAll()
-                .antMatchers("/products/**").permitAll()
-                .antMatchers("/cart/**").permitAll()
-                .antMatchers("/diary/**").permitAll()
+                .antMatchers("/join/**", "/board/**", "/cart/**", "/diary/**").permitAll()
+                .antMatchers("/products/**", "/payment/**").authenticated() // 결제 관련 경로는 인증된 사용자만 접근 가능
                 .antMatchers("/join/member/test").hasRole("USER")
-                // 이 밖에 모든 요청에 대해서 인증을 필요로 한다는 설정
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
-                .defaultSuccessUrl("/", true) // 로그인 성공 후 리디렉션 제어
+                .defaultSuccessUrl("/", true)
                 .usernameParameter("memEmail")
                 .passwordParameter("memPw")
                 .failureUrl("/member/login/error")
@@ -63,7 +58,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                 .logoutSuccessUrl("/")
                 .permitAll()
                 .and()
-                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class); // JWT 필터를 UsernamePasswordAuthenticationFilter 전에 추가
     }
 
     @Bean
