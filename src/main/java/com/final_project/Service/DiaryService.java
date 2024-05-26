@@ -27,4 +27,8 @@ public class DiaryService {
     public int Insert(Diary diary) {
         return dmi.Insert(diary);
     }
+
+    public int Delete(int diaryno) {return dmi.Delete(diaryno); }
+
+    public int Update(Diary diary) {return dmi.Update(diary); }
 }
