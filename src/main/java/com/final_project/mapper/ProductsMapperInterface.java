@@ -1,6 +1,6 @@
 package com.final_project.mapper;
 
-import com.final_project.entity.Products;
+import com.final_project.dto.ProductsDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -19,6 +19,7 @@ public interface ProductsMapperInterface {
                     "    CASE WHEN C.crtcd IS NULL THEN 0 ELSE 1 END CRTCK\n" +
                     " FROM TPRO A\n" +
                     " LEFT OUTER JOIN TPIF B ON A.PROCD = B.PROCD\n" +
-                    " LEFT OUTER JOIN tcrt C ON A.procd = C.crtcd AND C.mbrno = #{userNo}" )
-    List<Products> SelectAll(@Param("userNo") String userNo);
+                    " LEFT OUTER JOIN tcrt C ON A.procd = C.crtcd AND C.mbrno = #{userNo}\n" +
+                    " WHERE A.PROTP = #{protp};" )
+    List<ProductsDTO> SelectAll(@Param("userNo") String userNo, @Param("protp") int protp);
 }

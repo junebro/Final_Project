@@ -1,7 +1,7 @@
 package com.final_project.controller;
 
 import com.final_project.Service.CartService;
-import com.final_project.entity.Cart;
+import com.final_project.dto.CartDTO;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,16 +20,15 @@ public class CartController {
     private final CartService cs;
 
     @GetMapping(value = "/cartselect/{userNo}")
-    public ResponseEntity<List<Cart>> SelectAll(@PathVariable int userNo) {
-        List<Cart> cartList = cs.Select(userNo);
+    public ResponseEntity<List<CartDTO>> SelectAll(@PathVariable int userNo) {
+        List<CartDTO> cartList = cs.Select(userNo);
 
         return ResponseEntity.ok(cartList);
     }
 
     @PostMapping("/cartinsert")
-    public ResponseEntity<?> createCart(@RequestBody Cart cart) {
-        System.out.println("cart");
-        System.out.println(cart);
+    public ResponseEntity<?> createCart(@RequestBody CartDTO cart) {
+
         try {
             // 비즈니스 로직 실행
             int cnt = cs.Insert(cart);
@@ -46,7 +45,7 @@ public class CartController {
 
 
     @PostMapping("/cartdelete")
-    public ResponseEntity<?> deleteCart(@RequestBody Cart cart) {
+    public ResponseEntity<?> deleteCart(@RequestBody CartDTO cart) {
         try {
             // 비즈니스 로직 실행
             int cnt = cs.Delete(cart);

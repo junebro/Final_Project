@@ -8,9 +8,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
@@ -27,6 +30,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
+
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
@@ -37,12 +42,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                 .cors() // CORS 활성화
                 .and()
                 .authorizeRequests()
-                // 해당 API에 대해서는 모든 요청을 허가
-                .antMatchers("/join/**").permitAll()
-                .antMatchers("/board/**").permitAll()
-                .antMatchers("/products/**").permitAll()
-                .antMatchers("/cart/**").permitAll()
-                .antMatchers("/diary/**").permitAll()
+                .antMatchers("/join/**", "/board/**", "/cart/**", "/diary/**").permitAll()
+                .antMatchers("/products/**", "/payment/**").authenticated() // 결제 관련 경로는 인증된 사용자만 접근 가능
                 .antMatchers("/join/member/test").hasRole("USER")
 
                 .antMatchers("/uploads/**").permitAll()

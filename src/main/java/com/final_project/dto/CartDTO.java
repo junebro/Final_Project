@@ -1,17 +1,9 @@
-package com.final_project.entity;
+package com.final_project.dto;
 
+import lombok.Data;
 
-import lombok.Getter;
-import lombok.Setter;
-
-import javax.persistence.Entity;
-import javax.persistence.Id;
-
-@Entity
-@Getter
-@Setter
-public class Cart {
-    @Id
+@Data
+public class CartDTO {
     private int  mbrno ;
     private String crtcd ;
     private int crtqt ;

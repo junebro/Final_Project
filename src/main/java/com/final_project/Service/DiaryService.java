@@ -20,9 +20,7 @@ public class DiaryService {
         return dmi.Select(diary);
     }
 
-    public List<Diary> SelectDate(String memno) {
-        return dmi.SelectDate(memno);
-    }
+    public List<Diary> SelectDate(String memno) {return dmi.SelectDate(memno);}
 
     public int Insert(Diary diary) {
         return dmi.Insert(diary);

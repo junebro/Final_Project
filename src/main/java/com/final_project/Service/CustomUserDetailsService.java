@@ -3,6 +3,7 @@ package com.final_project.Service;
 import com.final_project.dto.MemberDTO;
 import com.final_project.mapper.MemberMapperInterface;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -26,7 +27,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         return createUserDetails(member);
     }
 
-    // 해당하는 User 의 데이터가 존재한다면 UserDetails 객체로 만들어서 return
+    // 해당하는 User 의 데이터가 존재한다면 UserDetails 객체로 만들어서 return합니다.
     private UserDetails createUserDetails(MemberDTO member) {
         return User.builder()
                 .username(member.getUsername())
