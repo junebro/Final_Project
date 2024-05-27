@@ -14,12 +14,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
-
-
 @Configuration
 @Slf4j
 @EnableWebSecurity
-public class SecurityConfig extends WebSecurityConfigurerAdapter{
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -27,30 +25,25 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
-
-
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .httpBasic().disable()
-                .csrf().disable() // PostMapping시 필요
+                .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .cors() // CORS 활성화
+                .cors()
                 .and()
                 .authorizeRequests()
-                // 해당 API에 대해서는 모든 요청을 허가
                 .antMatchers("/join/**").permitAll()
-                .antMatchers("/board/**").permitAll()
-                .antMatchers("/products/**").permitAll()
-                .antMatchers("/cart/**").permitAll()
-                .antMatchers("/nutri/**").permitAll()
-                .antMatchers("/join/member/test").hasRole("USER")
-                // 이 밖에 모든 요청에 대해서 인증을 필요로 한다는 설정
+                .antMatchers("/check/**").permitAll()
+                .antMatchers("/board/**", "/cart/**", "/diary/**").permitAll()
+                .antMatchers("/products/**", "/payment/**").hasRole("USER")
+                .antMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
-                .defaultSuccessUrl("/", true) // 로그인 성공 후 리디렉션 제어
+                .defaultSuccessUrl("/", true)
                 .usernameParameter("memEmail")
                 .passwordParameter("memPw")
                 .failureUrl("/member/login/error")
@@ -65,6 +58,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(); // 비밀번호 암호화를 위한 Bcrypt 암호화 컴포넌트 Bean 등록
+        return new BCryptPasswordEncoder();
     }
 }

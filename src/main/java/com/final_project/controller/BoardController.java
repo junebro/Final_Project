@@ -1,6 +1,7 @@
 package com.final_project.controller;
 
 import com.final_project.Service.BoardService;
+import com.final_project.Service.FileService;
 import com.final_project.entity.Board;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -11,10 +12,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -23,6 +27,7 @@ public class BoardController {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final BoardService bs;
+    private final FileService fileService;
 
     // 페이징 처리된 리스트 조회
     @GetMapping(value = "/boardList/paged")
@@ -34,7 +39,7 @@ public class BoardController {
             Map<String, Object> response = new HashMap<>();
             response.put("posts", boardPage.getContent());
             response.put("totalCount", boardPage.getTotalElements());
-            // 페이징 정보 포함하여 반환dd
+            // 페이징 정보 포함하여 반환
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             logger.error("페이징 처리된 게시판 목록을 가져오는 데 실패했습니다.", e);
@@ -54,11 +59,24 @@ public class BoardController {
         }
     }
 
+    // 게시물 생성
     @PostMapping("/boardInsert")
-    public ResponseEntity<?> createBoard(@RequestBody Board board) {
+    public ResponseEntity<?> createBoard(@RequestPart("board" ) Board board,
+                                         @RequestPart(value = "file1", required = false ) MultipartFile file1,
+                                         @RequestPart(value ="file2", required = false) MultipartFile file2,
+                                         @RequestPart(value="file3", required = false) MultipartFile file3) {
         try {
+            // 파일 배열 생성
+            MultipartFile[] files = {file1, file2, file3};
+
+            // 파일 배열에서 빈 파일을 제거하는 로직 추가
+            List<MultipartFile> validFiles = Arrays.stream(files)
+                    .filter(file -> file != null && !file.isEmpty())
+                    .collect(Collectors.toList());
+
+
             // 비즈니스 로직 실행
-            int cnt = bs.Insert(board);
+            int cnt = bs.Insert(board, validFiles.toArray(new MultipartFile[0]));
             if (cnt == 1) {
                 return ResponseEntity.ok("Insert successful");
             } else {
@@ -70,47 +88,98 @@ public class BoardController {
         }
     }
 
+
     @GetMapping(value = "/boardInsert")
     public String doGetInsert(Model model){
         model.addAttribute("board", new Board());
         return "/board/boardInsert" ;
     }
+
+    // 게시물 보기
     @GetMapping(value = "/boardDetail/{bono}")
-    public String SelectOne(@PathVariable("bono") Integer bono, Model model){
-        Board board = bs.SelectOne(bono);
-        model.addAttribute("board", board);
-        return "/board/boardDetail" ;
-    }
-
-    // 수정하기
-    @GetMapping(value = "/boardUpdate/{bono}")
-    public String doGetUpdate(@PathVariable("bono") Integer bono, Model model){
-        Board board = bs.SelectOne(bono);
-        model.addAttribute("board", board);
-        return "/board/boardUpdate" ;
-    }
-
-    // 폼 양식을 수정하고 [수정] 버튼을 클릭하였습니다.
-    @PostMapping(value = "/boardUpdate")
-    public String doPostUpdate(Board board){
-        // @Valid 를 사용하여 유효성 검사도 하면 좋습니다.
-        System.out.println("board : " + board);
-        int cnt = -999 ;
-        cnt = bs.Update(board);
-
-        if(cnt == 1){
-            return "redirect:/board/boardList" ;
-        }else{
-            return "/board/boardUpdate" ;
+    public ResponseEntity<Board> SelectOne(@PathVariable("bono") Integer bono){
+        try {
+            Board board = bs.SelectOne(bono);
+            return ResponseEntity.ok(board);
+        } catch (Exception e) {
+            logger.error("게시물 조회에 실패했습니다.", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 
-    @GetMapping(value = "/boardDelete/{bono}") // 삭제하기
-    public String Delete(@PathVariable("bono") Integer bono){
-        int cnt = -999;
-        cnt = bs.Delete(bono);
-        return "redirect:/board/boardList" ;
+    // 수정 페이지 요청 (게시물 조회)
+    @GetMapping(value = "/boardUpdate/{bono}")
+    public ResponseEntity<Board> doGetUpdate(@PathVariable("bono") Integer bono){
+        try {
+            Board board = bs.SelectOne(bono);
+            logger.info("Fetched board for update: {}", board);
+            return ResponseEntity.ok(board);
+        } catch (Exception e) {
+            logger.error("게시물 조회에 실패했습니다.", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
+    // 게시물 수정
+    @PostMapping(value = "/boardUpdate")
+    public ResponseEntity<?> doPostUpdate(@RequestPart("board") Board board,
+                                          @RequestPart(value = "file1", required = false) MultipartFile file1,
+                                          @RequestPart(value="file2", required = false) MultipartFile file2,
+                                          @RequestPart(value="file3", required = false) MultipartFile file3) {
+        try {
+            // 파일 배열 생성
+            MultipartFile[] files = {file1, file2, file3};
+
+            // 파일 배열에서 빈 파일을 제거하는 로직 추가
+            List<MultipartFile> validFiles = Arrays.stream(files)
+                    .filter(file -> file != null && !file.isEmpty())
+                    .collect(Collectors.toList());
+
+            // 파일이 있을 경우 처리
+            if (!validFiles.isEmpty()) {
+                if (validFiles.size() > 0) {
+                    String imageName = fileService.uploadFile(validFiles.get(0));
+                    board.setBoimage01(imageName);
+                    board.setThumb_boimage01(fileService.uploadThumbnailFile(imageName));
+                }
+                if (validFiles.size() > 1) {
+                    String imageName = fileService.uploadFile(validFiles.get(1));
+                    board.setBoimage02(imageName);
+                    board.setThumb_boimage02(fileService.uploadThumbnailFile(imageName));
+                }
+                if (validFiles.size() > 2) {
+                    String imageName = fileService.uploadFile(validFiles.get(2));
+                    board.setBoimage03(imageName);
+                    board.setThumb_boimage03(fileService.uploadThumbnailFile(imageName));
+                }
+            }
+
+            int cnt = bs.Update(board, validFiles.toArray(new MultipartFile[0]));
+            if(cnt == 1) {
+                return ResponseEntity.ok("Update successful");
+            } else {
+                throw new Exception("Update failed");
+            }
+        } catch (Exception e) {
+            logger.error("Error updating board", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error processing your request");
+        }
+    }
+
+    // 게시물 삭제
+    @DeleteMapping(value = "/boardDelete/{bono}")
+    public ResponseEntity<?> Delete(@PathVariable("bono") Integer bono){
+        try {
+            int cnt = bs.Delete(bono);
+            if(cnt == 1){
+                return ResponseEntity.ok("Delete successful");
+            } else {
+                throw new Exception("Delete failed");
+            }
+        } catch (Exception e) {
+            logger.error("게시물 삭제 중 오류가 발생했습니다.", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error processing your request");
+        }
     }
 }
-
 
