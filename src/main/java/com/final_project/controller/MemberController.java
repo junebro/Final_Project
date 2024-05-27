@@ -48,17 +48,18 @@ public class MemberController {
     }
 
     @PostMapping("/member/join")
-//  public String registerNewMember(@RequestBody MemberDTO memberDTO) {
     public ResponseEntity<?> registerNewMember(@RequestBody MemberDTO memberDTO) {
-        System.out.println(memberDTO);
+        System.out.println("Registering new member: " + memberDTO);
         try {
             memberService.registerNewMember(memberDTO);
-            //return "redirect:/login"; // 회원가입 성공 시 로그인 페이지로 리다이렉트
+            // 회원가입 성공 시 클라이언트에 성공 메시지를 반환합니다.
+            return ResponseEntity.ok("회원가입에 성공하였습니다.");
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("데이터를 가져오는 데 실패했습니다.");
-
+            // 서버 측 오류 로깅
+            System.err.println("회원 가입 중 에러 발생: " + e.getMessage());
+            // 클라이언트에 보다 구체적인 오류 메시지 반환
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("회원가입 처리 중 오류가 발생하였습니다: " + e.getMessage());
         }
-        return null;
     }
     // 준형 수정
     // 이메일 중복 체크
@@ -84,9 +85,10 @@ public class MemberController {
 
         String username = member.getMemEmail();
         String password = member.getMemPw();
-
+        System.out.println(member.getMemtype());
         // 데이터베이스에서 사용자 정보를 불러오기
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+
         if (userDetails == null) {
             throw new UsernameNotFoundException("User not found with username: " + username);
         }
@@ -97,19 +99,13 @@ public class MemberController {
         System.out.println("저장된 암호화된 비밀번호: " + storedPassword);
 
         if (passwordEncoder.matches(password, storedPassword)) {
+
             // Authentication 객체 생성
             Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 
             // JwtToken 생성
             JwtToken jwtToken = jwtTokenProvider.generateToken(authentication);
-
-//            String tokenString = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyMSIsImF1dGgiOiIiL…zMTV9.VKtAf_fWJogGaSTMfDaaJ2HjX54PMMmTHqE5EgAaopg";
-//
-//            // 추출한 토큰을 사용하여 사용자 ID를 추출합니다.
-//            String bb = jwtTokenProvider.getUserIdFromToken(tokenString);
-//            System.out.println("토큰토큰토큰토큰토큰토큰토큰토큰토큰토큰토큰토큰토큰토큰토큰토큰토큰토큰");
-//            System.out.println(bb);
-//            System.out.println("토큰토큰토큰토큰토큰토큰토큰토큰토큰토큰토큰토큰토큰토큰토큰토큰토큰토큰");
+            System.out.println(jwtToken);
 
             return jwtToken;
         } else {
