@@ -8,21 +8,16 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-
-
 
 @Configuration
 @Slf4j
 @EnableWebSecurity
-public class SecurityConfig extends WebSecurityConfigurerAdapter{
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -30,30 +25,25 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
-
-
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .httpBasic().disable()
-                .csrf().disable() // PostMapping시 필요
+                .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .cors() // CORS 활성화
+                .cors()
                 .and()
                 .authorizeRequests()
-                .antMatchers("/join/**", "/board/**", "/cart/**", "/diary/**").permitAll()
-                .antMatchers("/products/**", "/payment/**").authenticated() // 결제 관련 경로는 인증된 사용자만 접근 가능
-                .antMatchers("/join/member/test").hasRole("USER")
-
-                .antMatchers("/uploads/**").permitAll()
-                .antMatchers("/userchat/**", "/adminchat/**").permitAll() // WebSocket 경로 접근 허용
-
-                // 이 밖에 모든 요청에 대해서 인증을 필요로 한다는 설정
+                .antMatchers("/join/**").permitAll()
+                .antMatchers("/check/**").permitAll()
+                .antMatchers("/board/**", "/cart/**", "/diary/**").permitAll()
+                .antMatchers("/products/**", "/payment/**").hasRole("USER")
+                .antMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
-                .defaultSuccessUrl("/", true) // 로그인 성공 후 리디렉션 제어
+                .defaultSuccessUrl("/", true)
                 .usernameParameter("memEmail")
                 .passwordParameter("memPw")
                 .failureUrl("/member/login/error")
@@ -68,6 +58,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(); // 비밀번호 암호화를 위한 Bcrypt 암호화 컴포넌트 Bean 등록
+        return new BCryptPasswordEncoder();
     }
 }

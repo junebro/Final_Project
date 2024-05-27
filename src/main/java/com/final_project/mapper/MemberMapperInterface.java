@@ -13,8 +13,8 @@ import java.util.List;
 @Mapper
 public interface MemberMapperInterface {
     // 회원가입
-    @Insert("INSERT INTO TMEM (MEMEMAIL, MEMPW, MEMBERNICK, MEMADDRESS, DETAILADDRESS, ZONECODE, DISNO)" +
-            "VALUES (#{member.memEmail}, #{member.memPw}, #{member.memberNick}, #{member.memAddress}, #{member.detailAddress}, #{member.zonecode}, 1)")
+    @Insert("INSERT INTO TMEM (MEMTYPE, MEMEMAIL, MEMPW, MEMBERNICK, MEMADDRESS, DETAILADDRESS, ZONECODE, DISNO)" +
+            "VALUES (#{member.memtype}, #{member.memEmail}, #{member.memPw}, #{member.memberNick}, #{member.memAddress}, #{member.detailAddress}, #{member.zonecode}, 1)")
     void insertMember(@Param("member") MemberDTO member);
 
     // 이메일 중복 검사
