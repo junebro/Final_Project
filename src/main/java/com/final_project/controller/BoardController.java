@@ -95,11 +95,14 @@ public class BoardController {
         return "/board/boardInsert" ;
     }
 
-    // 게시물 보기
+    // 게시물 상세 보기
     @GetMapping(value = "/boardDetail/{bono}")
     public ResponseEntity<Board> SelectOne(@PathVariable("bono") Integer bono){
         try {
             Board board = bs.SelectOne(bono);
+            if (board != null) {
+                bs.updateViewCount(bono);  // 조회수 증가
+            }
             return ResponseEntity.ok(board);
         } catch (Exception e) {
             logger.error("게시물 조회에 실패했습니다.", e);
