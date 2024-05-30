@@ -26,6 +26,11 @@ public class MemberDTO implements UserDetails {
     private String detailAddress;
     private String zonecode;
     private int disNo;
+    private String gender;
+    private double memheight;
+    private double memweight;
+    private int memage;
+    private String memImgae;
 
     // UserDetails 메서드 구현
 

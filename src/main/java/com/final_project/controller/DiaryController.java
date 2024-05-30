@@ -22,13 +22,13 @@ public class DiaryController {
     private final DiaryService ds;
 
     // 일반 리스트 조회
-    @GetMapping(value = "/diaryList/{memno}")
-    public ResponseEntity<?> SelectAll(@PathVariable String memno) {
-
+    @GetMapping(value = "/diaryList/{userNo}")
+    public ResponseEntity<?> SelectAll(@PathVariable String userNo) {
+        System.out.println(userNo);
         try {
 
-            List<Diary> diaryList = ds.SelectAll(memno);
-            List<Diary> diaryDate = ds.SelectDate(memno);
+            List<Diary> diaryList = ds.SelectAll(userNo);
+            List<Diary> diaryDate = ds.SelectDate(userNo);
 
 
             System.out.println(diaryList);
@@ -49,6 +49,7 @@ public class DiaryController {
 
     @PostMapping("/diaryselect")
     public ResponseEntity<?> selectDiary(@RequestBody Diary diary) {
+        System.out.println(diary);
         try {
             List<Diary> diarySelect = ds.Select(diary);
             return ResponseEntity.ok(diarySelect); // 데이터를 JSON 형식으로 반환
@@ -61,6 +62,8 @@ public class DiaryController {
     // 일기 등록
     @PostMapping("/diaryInsert")
     public ResponseEntity<?> createBoard(@RequestBody Diary diary) {
+
+        System.out.println(diary);
         try {
             // 비즈니스 로직 실행
             int cnt = ds.Insert(diary);
