@@ -5,6 +5,7 @@ import com.final_project.Service.MemberService;
 import com.final_project.dto.JwtToken;
 import com.final_project.dto.MemberDTO;
 
+import com.final_project.dto.MypageDTO;
 import com.final_project.utility.JwtTokenProvider;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 @RestController
@@ -116,6 +121,20 @@ public class MemberController {
     private void validateInput(String username, String password) {
         if (username == null || username.isEmpty() || password == null || password.isEmpty()) {
             throw new IllegalArgumentException("Username and password cannot be null or empty");
+        }
+    }
+
+    // 내 정보 조회
+    @GetMapping(value = "/memInfo/{userNo}")
+    public ResponseEntity<?> SelectMem(@PathVariable String userNo) {
+
+        try {
+            MemberDTO memInfo = memberService.SelectMem(userNo);
+            return ResponseEntity.ok(memInfo); // Map을 JSON 형식으로 반환
+
+        } catch (Exception e) {
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 

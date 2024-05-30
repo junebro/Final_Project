@@ -12,15 +12,15 @@ import java.util.List;
 public class DiaryService {
     private final DiaryMapperInterface dmi;
 
-    public List<Diary> SelectAll(String memno) {
-        return dmi.SelectAll(memno);
+    public List<Diary> SelectAll(String userNo) {
+        return dmi.SelectAll(userNo);
     }
 
     public List<Diary> Select(Diary diary) {
         return dmi.Select(diary);
     }
 
-    public List<Diary> SelectDate(String memno) {return dmi.SelectDate(memno);}
+    public List<Diary> SelectDate(String userNo) {return dmi.SelectDate(userNo);}
 
     public int Insert(Diary diary) {
         return dmi.Insert(diary);
