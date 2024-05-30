@@ -48,4 +48,8 @@ public interface BoardMapperInterface {
 //    게시글의 총 조회수, 댓글 수, 좋아요 수를 데이터베이스에서 직접 계산하여 불러온다.
 //    게시글을 삽입하거나 업데이트할 때 이러한 수치들도 함께 처리한다.
 //    게시글 삽입 시에는 조회수와 좋아요 수를 0으로 초기화한다.
+
+    // 조회수 업데이트
+    @Update("UPDATE boards SET viewCount = viewCount + 1 WHERE bono = #{bono}")
+    int updateViewCount(Integer bono);
 }

@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -110,5 +111,16 @@ public class BoardService {
         int result = bmi.Delete(bono);
         logger.info("Delete result for board ID {}: {}", bono, result);
         return result;
+    }
+
+    // 조회수 업데이트 메소드
+    @Transactional
+    public void updateViewCount(Integer bono) {
+        int result = bmi.updateViewCount(bono);
+        if (result == 0) {
+            logger.error("Failed to update view count for bono: {}", bono);
+        } else {
+            logger.info("Successfully updated view count for bono: {}", bono);
+        }
     }
 }
