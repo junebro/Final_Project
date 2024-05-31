@@ -1,11 +1,14 @@
 package com.final_project.Service;
 import com.final_project.dto.MemberDTO;
+import com.final_project.dto.MypageDTO;
 import com.final_project.mapper.MemberMapperInterface;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 
 @Service
@@ -34,6 +37,10 @@ public class MemberService {
         member.setMemAddress(memberDTO.getMemAddress());
         member.setDetailAddress(memberDTO.getDetailAddress());
         member.setZonecode(memberDTO.getZonecode());
+        member.setGender(memberDTO.getGender());
+        member.setMemage(memberDTO.getMemage());
+        member.setMemheight(memberDTO.getMemheight());
+        member.setMemweight(memberDTO.getMemweight());
         memberMapper.insertMember(member);
     }
 
@@ -47,5 +54,10 @@ public class MemberService {
     public boolean isNickAvailable(String newNick) {
         // 닉네임이 이미 DB에 존재하는지 확인
         return memberMapper.countByNick(newNick) == 0;
+    }
+
+    // 내 정보 조회
+    public MemberDTO SelectMem(String userNo) {
+        return memberMapper.SelectMem(userNo);
     }
 }
