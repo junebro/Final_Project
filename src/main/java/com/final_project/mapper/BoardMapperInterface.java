@@ -52,4 +52,8 @@ public interface BoardMapperInterface {
     // 조회수 업데이트
     @Update("UPDATE boards SET viewCount = viewCount + 1 WHERE bono = #{bono}")
     int updateViewCount(Integer bono);
+
+    // 좋아요 수 업데이트
+    @Update("UPDATE boards SET likeCount = CASE WHEN likeCount IS NULL THEN 1 ELSE likeCount + #{increment} END WHERE bono = #{bono}")
+    int updateLikeCount(@Param("bono") Integer bono, @Param("increment") int increment);
 }
