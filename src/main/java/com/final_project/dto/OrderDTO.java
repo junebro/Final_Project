@@ -11,4 +11,16 @@ public class OrderDTO {
     private Double ordpr; // 주문 총액
     private LocalDateTime orddt; // 주문 날짜
     private String ordst; // 주문 상태 (예: "주문 완료", "배송 중", "배송 완료")
+
+    private String ordnm;
+    private String ordzc;
+    private String ordar;
+    private String orddar;
+    private String ordph;
+
+    private String ordbynm;
+    private String ordbyzc;
+    private String ordbyar;
+    private String ordbydar;
+    private String ordbyph;
 }
