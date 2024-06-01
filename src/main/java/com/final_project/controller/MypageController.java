@@ -51,4 +51,20 @@ public class MypageController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
+
+
+    // 주문내역 조회
+    @GetMapping(value = "/myOrderList/{userNo}")
+    public ResponseEntity<?> SelectOrderAll(@PathVariable String userNo) {
+        System.out.println("작성글 조회 : " + userNo);
+        try {
+
+            List<MypageDTO> myOrderList = mypagemi.SelectOrderAll(userNo);
+            return ResponseEntity.ok(myOrderList);
+
+        } catch (Exception e) {
+            logger.error("작성글 목록을 가져오는 데 실패했습니다.", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
 }

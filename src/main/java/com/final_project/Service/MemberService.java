@@ -1,14 +1,11 @@
 package com.final_project.Service;
 import com.final_project.dto.MemberDTO;
-import com.final_project.dto.MypageDTO;
 import com.final_project.mapper.MemberMapperInterface;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 
 @Service
@@ -59,5 +56,13 @@ public class MemberService {
     // 내 정보 조회
     public MemberDTO SelectMem(String userNo) {
         return memberMapper.SelectMem(userNo);
+    }
+
+    // 내 정보 수정
+    public void Update(MemberDTO member) {memberMapper.UpdateMem(member);}
+
+
+    public void DeleteMem(String userNo) {
+        memberMapper.DeleteMem(userNo);
     }
 }

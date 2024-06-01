@@ -24,4 +24,12 @@ public interface MypageMapperInterface {
             " LEFT OUTER JOIN tmem C ON A.mbrno = C.memno\n" +
             " WHERE B.mbrno = ${userNo};")
     List<MypageDTO> SelectLike(@Param("userNo")String userNo);
+
+    // 마이페이지 - 주문내역 조회
+    @Select("SELECT A.ordno, A.memno, A.ordpr, A.orddt, B.procd, B.crtqt, C.pronm, C.propr, C.proimg\n" +
+            "FROM TORD A\n" +
+            "LEFT OUTER JOIN tors B ON A.ORDNO = B.ORDNO\n" +
+            "LEFT OUTER JOIN tpro C ON B.PROCD = C.PROCD\n" +
+            "WHERE memno = ${userNo};")
+    List<MypageDTO> SelectOrderAll(@Param("userNo")String userNo);
 }

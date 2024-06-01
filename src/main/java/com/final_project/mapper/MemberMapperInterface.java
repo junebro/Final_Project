@@ -3,10 +3,7 @@ package com.final_project.mapper;
 
 import com.final_project.dto.MemberDTO;
 import com.final_project.dto.MypageDTO;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -33,4 +30,12 @@ public interface MemberMapperInterface {
     // 내 정보 조회
     @Select("SELECT * FROM tmem WHERE MEMNO = ${userNo};")
     MemberDTO SelectMem(@Param("userNo")String userNo);
+
+    // 마이페이지 업데이트
+    @Update("UPDATE tmem SET memImage = #{memImage}, MEMBERNICK = #{memberNick}, GENDER = #{gender}, MEMAGE = #{memage}, MEMHEIGHT = #{memheight}, MEMWEIGHT = #{memweight}, ZONECODE = #{zonecode}, MEMADDRESS = #{memAddress}, DETAILADDRESS = #{detailAddress} where memno=${memNo};")
+    void UpdateMem(MemberDTO member);
+
+    // 회원 탈퇴
+    @Delete("DELETE FROM tmem WHERE memno = ${userNo};")
+    void DeleteMem(@Param("userNo")String userNo);
 }

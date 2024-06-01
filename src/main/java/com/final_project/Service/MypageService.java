@@ -22,4 +22,9 @@ public class MypageService {
     public List<MypageDTO> SelectLike(String userNo) {
         return mypagemi.SelectLike(userNo);
     }
+
+    // 주문내역 조회 하는중
+    public List<MypageDTO> SelectOrderAll(String userNo) {
+        return mypagemi.SelectAll(userNo);
+    }
 }
