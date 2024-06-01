@@ -23,7 +23,7 @@ public class MypageService {
         return mypagemi.SelectLike(userNo);
     }
 
-    // 주문내역 조회
+    // 주문내역 조회 하는중
     public List<MypageDTO> SelectOrderAll(String userNo) {
         return mypagemi.SelectAll(userNo);
     }
