@@ -123,4 +123,17 @@ public class BoardService {
             logger.info("Successfully updated view count for bono: {}", bono);
         }
     }
+
+    // 좋아요 수 업데이트
+    @Transactional
+    public int updateLikeCount(Integer bono, boolean increase) {
+        int increment = increase ? 1 : -1;
+        int result = bmi.updateLikeCount(bono, increment);
+        if (result == 0) {
+            logger.error("Failed to update like count for bono: {}", bono);
+        } else {
+            logger.info("Successfully updated like count for bono: {}", bono);
+        }
+        return result;
+    }
 }

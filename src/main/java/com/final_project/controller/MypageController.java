@@ -32,10 +32,8 @@ public class MypageController {
     public ResponseEntity<?> SelectAll(@PathVariable String userNo) {
         System.out.println("작성글 조회 : " + userNo);
         try {
-
             List<MypageDTO> writeList = mypagemi.SelectAll(userNo);
             return ResponseEntity.ok(writeList); // Map을 JSON 형식으로 반환
-
         } catch (Exception e) {
             logger.error("작성글 목록을 가져오는 데 실패했습니다.", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
@@ -46,17 +44,8 @@ public class MypageController {
     public ResponseEntity<?> SelectLike(@PathVariable String userNo) {
         System.out.println("좋아요 조회 : " + userNo);
         try {
-
             List<MypageDTO> likeList = mypagemi.SelectLike(userNo);
-            System.out.println(likeList);
-
-            Map<String, Object> response = new HashMap<>();
-
-            response.put("likeList", likeList);
-
-
-            return ResponseEntity.ok(response); // Map을 JSON 형식으로 반환
-
+            return ResponseEntity.ok(likeList); // Map을 JSON 형식으로 반환
         } catch (Exception e) {
             logger.error("작성글 목록을 가져오는 데 실패했습니다.", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
