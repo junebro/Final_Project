@@ -6,6 +6,7 @@ import com.final_project.dto.JwtToken;
 import com.final_project.dto.MemberDTO;
 
 import com.final_project.dto.MypageDTO;
+import com.final_project.entity.Diary;
 import com.final_project.utility.JwtTokenProvider;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,6 +36,7 @@ public class MemberController {
     private final CustomUserDetailsService userDetailsService;
     private final JwtTokenProvider jwtTokenProvider;
     private final JwtTokenProvider getUserIdFromToken;
+
     @Autowired
     public MemberController(MemberService memberService, PasswordEncoder passwordEncoder, CustomUserDetailsService userDetailsService, JwtTokenProvider jwtTokenProvider, JwtTokenProvider getUserIdFromToken) {
         this.memberService = memberService;
@@ -43,8 +45,6 @@ public class MemberController {
         this.jwtTokenProvider = jwtTokenProvider;
         this.getUserIdFromToken = getUserIdFromToken;
     }
-
-
 
     @GetMapping("/member/join")
     public String showRegisterForm(Model model) {
@@ -81,9 +81,6 @@ public class MemberController {
         boolean isAvailable = memberService.isNickAvailable(newNick);
         return ResponseEntity.ok(isAvailable);
     }
-
-
-
 
     @PostMapping("/member/login")
     public JwtToken signIn(@RequestBody MemberDTO member) {
@@ -136,6 +133,27 @@ public class MemberController {
 
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
+    }
+
+    // 내 정보 수정
+    @PostMapping(value = "/editProfile")
+    public ResponseEntity<?> updateDiary(@RequestBody MemberDTO member) {
+
+        System.out.println(member);
+
+        try {
+            memberService.Update(member);
+            return ResponseEntity.ok("Update successful");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error processing your request: " + e.getMessage());
+        }
+    }
+
+    // 회원 탈퇴
+    @DeleteMapping("/members/{userNo}")
+    public ResponseEntity<?> deleteMember(@PathVariable String userNo) {
+        memberService.DeleteMem(userNo);
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/test")

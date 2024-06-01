@@ -13,4 +13,6 @@ public interface OrderMapperInterface {
 
     @Select("INSERT INTO order_sequence () VALUES (); SELECT LAST_INSERT_ID()")
     Long getNextOrderSequence();
+
+
 }

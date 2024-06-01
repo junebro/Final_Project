@@ -30,7 +30,7 @@ public class MemberDTO implements UserDetails {
     private double memheight;
     private double memweight;
     private int memage;
-    private String memImgae;
+    private String memImage; // 이미지 수정
 
     // UserDetails 메서드 구현
 
@@ -78,6 +78,9 @@ public class MemberDTO implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public void setUserNo(Long userNo) {
     }
 
 
