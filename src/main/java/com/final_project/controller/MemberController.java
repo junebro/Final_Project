@@ -21,7 +21,13 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -155,6 +161,38 @@ public class MemberController {
         memberService.DeleteMem(userNo);
         return ResponseEntity.ok().build();
     }
+
+    // 프로필 이미지 업로드
+    @PostMapping("/upload-profile-image/{userNo}")
+    public String uploadProfileImage(@PathVariable String userNo, @RequestParam("profileImage") MultipartFile file) throws Exception {
+
+        // 현재 시간을 이용해 타임스탬프 생성
+        String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
+        String originalFileName = file.getOriginalFilename();
+
+        // 파일 이름 안전성 확인 및 타임스탬프 추가
+        String safeFileName = timestamp + "_" + (originalFileName != null ? Paths.get(originalFileName).getFileName().toString() : "defaultName");
+
+        // 절대 경로 설정
+        Path targetLocation = Paths.get("D:/final-project-react/src/images/profileImage/" + safeFileName);
+
+        // 해당 경로의 상위 디렉토리가 없으면 생성
+        Files.createDirectories(targetLocation.getParent());
+
+        // 파일 저장
+        Files.copy(file.getInputStream(), targetLocation);
+
+        // 사용자 프로필 이미지 경로 업데이트
+        memberService.updateUserProfileImage(userNo, safeFileName);
+
+        return safeFileName;
+    }
+
+    // 프로필 이미지 조회
+//    @GetMapping("/profile-image")
+//    public String getProfileImagePath(@PathVariable Long userId) {
+//        return memberService.getUserProfileImagePath(userId);
+//    }
 
     @PostMapping("/test")
     public String test() {
