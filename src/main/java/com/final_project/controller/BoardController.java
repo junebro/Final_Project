@@ -184,5 +184,22 @@ public class BoardController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error processing your request");
         }
     }
+
+    // 좋아요 업데이트
+    @PostMapping("/likes/{bono}")
+    public ResponseEntity<?> updateLikes(@PathVariable("bono") Integer bono, @RequestBody Map<String, Object> payload) {
+        try {
+            boolean increase = Boolean.parseBoolean(payload.get("liked").toString());
+            int updateResult = bs.updateLikeCount(bono, increase);
+            if (updateResult == 1) {
+                return ResponseEntity.ok("Like updated successfully");
+            } else {
+                throw new Exception("Failed to update likes");
+            }
+        } catch (Exception e) {
+            logger.error("Error updating likes for bono: {}", bono, e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error processing your request");
+        }
+    }
 }
 

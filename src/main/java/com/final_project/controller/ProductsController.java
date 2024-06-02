@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController  // 이 부분을 @RestController로 변경
@@ -20,11 +19,7 @@ public class ProductsController {
     private final ProductsService ps;
 
     @GetMapping(value = "/products/{userNo}")
-    public ResponseEntity<List<ProductsDTO>> selectAll(@PathVariable String userNo, @RequestParam(required = false) Integer protp, HttpServletRequest request) {
-
-        String token = request.getHeader("Authorization");
-        System.out.println("Received token: " + token); // 토큰 로깅
-
+    public ResponseEntity<List<ProductsDTO>> selectAll(@PathVariable String userNo, @RequestParam(required = false) Integer protp) {
         List<ProductsDTO> productList = ps.SelectAll(userNo, protp);
         return ResponseEntity.ok(productList);
     }
