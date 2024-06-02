@@ -2,10 +2,7 @@ package com.final_project.mapper;
 
 
 import com.final_project.dto.MemberDTO;
-import com.final_project.dto.MypageDTO;
 import org.apache.ibatis.annotations.*;
-
-import java.util.List;
 
 
 @Mapper
@@ -42,4 +39,10 @@ public interface MemberMapperInterface {
     @Update("UPDATE tmem SET memimage = #{imagePath} WHERE memno = #{userNo}")
     void updateProfileImagePath(@Param("userNo") String userNo, @Param("imagePath") String imagePath);
 
+    // 이메일을 통해 회원 번호(memNo)를 찾는 쿼리
+    @Select("SELECT memNo FROM tmem WHERE memEmail = #{email}")
+    Integer findMemNoByEmail(String email);
+
+    @Select("SELECT memNo FROM tmem WHERE memNo = #{userId}")
+    Integer findMemNoByUserId(String userId);
 }

@@ -1,6 +1,6 @@
 package com.final_project.Service;
 
-import com.final_project.entity.Board;
+import com.final_project.dto.BoardDTO;
 import com.final_project.mapper.BoardMapperInterface;
 import com.github.pagehelper.PageHelper;
 import lombok.RequiredArgsConstructor;
@@ -24,11 +24,11 @@ public class BoardService {
     private static final Logger logger = LoggerFactory.getLogger(BoardService.class);
 
     // 페이징 처리된 리스트 조회
-    public Page<Board> SelectAll(Pageable pageable) {
+    public Page<BoardDTO> SelectAll(Pageable pageable, String orderBy) {
         logger.info("Starting pagination with page number: {} and page size: {}", pageable.getPageNumber(), pageable.getPageSize());
         PageHelper.startPage(pageable.getPageNumber(), pageable.getPageSize());
-        List<Board> boards = bmi.SelectAll();// 실제 데이터 조회
-        long total = countBoards(); /// 전체 게시물 수 조회
+        List<BoardDTO> boards = bmi.SelectAll(orderBy); // 실제 데이터 조회를 BoardDTO로 변경
+        long total = countBoards(); // 전체 게시물 수 조회
         logger.info("Fetched {} boards with total of {} entries", boards.size(), total);
         return new PageImpl<>(boards, pageable, total);
     }
@@ -37,35 +37,43 @@ public class BoardService {
     private long countBoards() {
         long count = bmi.count();
         logger.info("Total number of boards: {}", count);
-        return bmi.count(); // 전체 게시물 수를 반환하는 MyBatis 메소드
+        return count; // 전체 게시물 수를 반환하는 MyBatis 메소드
     }
 
-    public List<Board> SelectAll() {
-        List<Board> boards = bmi.SelectAll();
-        logger.info("Fetched all boards, count: {}", boards.size());
-        return boards;
+    // 일반 리스트 조회
+    public List<BoardDTO> SelectAll(String orderBy) {
+        logger.info("Fetching all boards ordered by: {}", orderBy);
+        return bmi.SelectAll(orderBy);
+    }
+
+    // 게시물 검색
+    public List<BoardDTO> searchByTitleOrContent(String keyword) {
+        logger.info("Searching boards with keyword: {}", keyword);
+        List<BoardDTO> searchResults = bmi.searchByTitleOrContent(keyword);
+        logger.info("Found {} boards matching the keyword: {}", searchResults.size(), keyword);
+        return searchResults;
     }
 
     // 게시물 등록
-    public int Insert(Board board, MultipartFile[] files) throws IOException {
+    public int Insert(BoardDTO boardDto, MultipartFile[] files) throws IOException {
         // 이미지 파일 저장 및 파일명 설정
         for (MultipartFile file : files) {
             if (file != null && !file.isEmpty()) {
                 String imageName = saveFile(file);
-                if (board.getBoimage01() == null) {
-                    board.setBoimage01(imageName);
-                    board.setThumb_boimage01(fileService.uploadThumbnailFile(imageName));
-                } else if (board.getBoimage02() == null) {
-                    board.setBoimage02(imageName);
-                    board.setThumb_boimage02(fileService.uploadThumbnailFile(imageName));
-                } else if (board.getBoimage03() == null) {
-                    board.setBoimage03(imageName);
-                    board.setThumb_boimage03(fileService.uploadThumbnailFile(imageName));
+                if (boardDto.getBoimage01() == null) {
+                    boardDto.setBoimage01(imageName);
+                    boardDto.setThumb_boimage01(fileService.uploadThumbnailFile(imageName));
+                } else if (boardDto.getBoimage02() == null) {
+                    boardDto.setBoimage02(imageName);
+                    boardDto.setThumb_boimage02(fileService.uploadThumbnailFile(imageName));
+                } else if (boardDto.getBoimage03() == null) {
+                    boardDto.setBoimage03(imageName);
+                    boardDto.setThumb_boimage03(fileService.uploadThumbnailFile(imageName));
                 }
             }
         }
-        logger.info("Inserting a new board with title: {}", board.getBotitle());
-        return bmi.Insert(board);
+        logger.info("Inserting a new board with title: {}", boardDto.getBotitle());
+        return bmi.Insert(boardDto);
     }
 
     // 파일을 저장하고 파일 이름을 반환하는 메소드
@@ -74,34 +82,34 @@ public class BoardService {
     }
 
     // 게시물 조회
-    public Board SelectOne(Integer bono) {
+    public BoardDTO SelectOne(Integer bono) {
         logger.info("Fetching board with ID: {}", bono);
-        Board board = bmi.SelectOne(bono);
+        BoardDTO board = bmi.SelectOne(bono);
         logger.info("Fetched board: {}", board);
         return board;
     }
 
     // 게시물 수정
-    public int Update(Board board, MultipartFile[] files) throws IOException {
+    public int Update(BoardDTO boardDto, MultipartFile[] files) throws IOException {
         // 이미지 파일 처리
         for (MultipartFile file : files) {
             if (file != null && !file.isEmpty()) {
                 String imageName = saveFile(file);
-                if (board.getBoimage01() == null) {
-                    board.setBoimage01(imageName);
-                    board.setThumb_boimage01(fileService.uploadThumbnailFile(imageName));
-                } else if (board.getBoimage02() == null) {
-                    board.setBoimage02(imageName);
-                    board.setThumb_boimage02(fileService.uploadThumbnailFile(imageName));
-                } else if (board.getBoimage03() == null) {
-                    board.setBoimage03(imageName);
-                    board.setThumb_boimage03(fileService.uploadThumbnailFile(imageName));
+                if (boardDto.getBoimage01() == null) {
+                    boardDto.setBoimage01(imageName);
+                    boardDto.setThumb_boimage01(fileService.uploadThumbnailFile(imageName));
+                } else if (boardDto.getBoimage02() == null) {
+                    boardDto.setBoimage02(imageName);
+                    boardDto.setThumb_boimage02(fileService.uploadThumbnailFile(imageName));
+                } else if (boardDto.getBoimage03() == null) {
+                    boardDto.setBoimage03(imageName);
+                    boardDto.setThumb_boimage03(fileService.uploadThumbnailFile(imageName));
                 }
             }
         }
-        logger.info("Updating board with ID: {}, Title: {}, Images: {}, {}, {}", board.getBono(), board.getBotitle(), board.getBoimage01(), board.getBoimage02(), board.getBoimage03());
-        int result = bmi.Update(board);
-        logger.info("Update result for board ID {}: {}", board.getBono(), result);
+        logger.info("Updating board with ID: {}, Title: {}, Images: {}, {}, {}", boardDto.getBono(), boardDto.getBotitle(), boardDto.getBoimage01(), boardDto.getBoimage02(), boardDto.getBoimage03());
+        int result = bmi.Update(boardDto);
+        logger.info("Update result for board ID {}: {}", boardDto.getBono(), result);
         return result;
     }
 

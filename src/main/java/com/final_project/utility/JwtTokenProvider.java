@@ -58,6 +58,9 @@ public class JwtTokenProvider {
                 .signWith(SignatureAlgorithm.HS256, key)
                 .compact();
 
+        System.out.println("Generated Access Token: " + accessToken);
+        System.out.println("Generated Refresh Token: " + refreshToken);
+
         return JwtToken.builder()
                 .grantType("Bearer")
                 .accessToken(accessToken)
@@ -155,5 +158,11 @@ public class JwtTokenProvider {
             System.err.println("Invalid token");
             return null;
         }
+    }
+
+    // 토큰에서 mbrno를 추출
+    public Integer getMbrno(String token) {
+        Claims claims = parseClaims(token);
+        return claims.get("mbrno", Integer.class);
     }
 }

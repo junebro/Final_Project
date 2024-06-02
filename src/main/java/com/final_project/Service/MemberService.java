@@ -69,4 +69,14 @@ public class MemberService {
     public void updateUserProfileImage(String userNo, String imagePath) {
         memberMapper.updateProfileImagePath(userNo, imagePath);
     }
+
+    public Integer findMemNoByEmail(String email) {
+        // MemberMapperInterface의 findMemNoByEmail 메서드를 사용하여 memNo를 찾아 반환
+        return memberMapper.findMemNoByEmail(email);
+    }
+
+    public Integer findMemNoByUserId(String userId) {
+        return memberMapper.findMemNoByUserId(userId);
+    }
+
 }
