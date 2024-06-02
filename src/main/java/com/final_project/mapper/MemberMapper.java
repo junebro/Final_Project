@@ -1,10 +1,8 @@
 package com.final_project.mapper;
 
 import com.final_project.dto.NutrientDTO;
-import com.final_project.entity.Nutrient;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
 @Mapper
