@@ -65,4 +65,8 @@ public class MemberService {
     public void DeleteMem(String userNo) {
         memberMapper.DeleteMem(userNo);
     }
+
+    public void updateUserProfileImage(String userNo, String imagePath) {
+        memberMapper.updateProfileImagePath(userNo, imagePath);
+    }
 }

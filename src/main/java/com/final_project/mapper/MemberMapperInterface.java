@@ -38,4 +38,8 @@ public interface MemberMapperInterface {
     // 회원 탈퇴
     @Delete("DELETE FROM tmem WHERE memno = ${userNo};")
     void DeleteMem(@Param("userNo")String userNo);
+
+    @Update("UPDATE tmem SET memimage = #{imagePath} WHERE memno = #{userNo}")
+    void updateProfileImagePath(@Param("userNo") String userNo, @Param("imagePath") String imagePath);
+
 }
