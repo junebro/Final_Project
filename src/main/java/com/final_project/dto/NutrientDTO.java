@@ -1,11 +1,17 @@
-package com.final_project.entity;
+package com.final_project.dto;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-@Getter @Setter @ToString
-public class Nutrient {
+import javax.persistence.Entity;
+import javax.persistence.Id;
+
+@Getter
+@Setter
+@ToString
+@Entity
+public class NutrientDTO {
     private double calories;
     private double carbohydrate; // 탄수화물
     private double protein; // 단백질
@@ -21,5 +27,7 @@ public class Nutrient {
     private double carbohydrateRate; // 탄수화물비율
     private double proteinRate; // 단백질 비율
     private double fatRate; // 지방 비율
+    @Id
+    private int memno; // 멤버 코드
 
 }
