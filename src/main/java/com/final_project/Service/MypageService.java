@@ -1,6 +1,7 @@
 package com.final_project.Service;
 
 import com.final_project.dto.MypageDTO;
+import com.final_project.dto.OrderDTO;
 import com.final_project.entity.Diary;
 import com.final_project.mapper.MypageMapperInterface;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +25,7 @@ public class MypageService {
     }
 
     // 주문내역 조회 하는중
-    public List<MypageDTO> SelectOrderAll(String userNo) {
-        return mypagemi.SelectAll(userNo);
+    public List<OrderDTO> SelectOrderAll(String userNo) {
+        return mypagemi.SelectOrderAll(userNo);
     }
 }
