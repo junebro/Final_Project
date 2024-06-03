@@ -29,5 +29,6 @@ public class NutrientDTO {
     private double fatRate; // 지방 비율
     @Id
     private int memno; // 멤버 코드
-
+    private String creation_date; // 등록 일
+    private String membernick; // 닉네임
 }

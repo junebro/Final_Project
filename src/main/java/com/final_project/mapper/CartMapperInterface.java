@@ -25,4 +25,8 @@ public interface CartMapperInterface {
 
     @Insert("DELETE FROM tcrt WHERE mbrno = #{cart.mbrno} AND crtcd = #{cart.crtcd}")
     int Delete(@Param("cart") CartDTO cart);
+
+    /* 식단 추천에서 저장시킴 */
+    @Insert("INSERT INTO tcrt (mbrno, crtcd, crtqt) VALUES (#{cartItems.mbrno}, #{cartItems.crtcd}, #{cartItems.crtqt})")
+    void insertCartItems(List<CartDTO> cartItems);
 }
