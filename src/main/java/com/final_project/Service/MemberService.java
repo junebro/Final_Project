@@ -79,4 +79,8 @@ public class MemberService {
         return memberMapper.findMemNoByUserId(userId);
     }
 
+    public String findMemberNickByUserId(String userId) {
+        return memberMapper.findMemberNickByUserId(userId);
+    }
+
 }

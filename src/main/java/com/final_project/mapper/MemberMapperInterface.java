@@ -45,4 +45,7 @@ public interface MemberMapperInterface {
 
     @Select("SELECT memNo FROM tmem WHERE memNo = #{userId}")
     Integer findMemNoByUserId(String userId);
+
+    @Select("SELECT memberNick FROM tmem WHERE memNo = #{userId}")
+    String findMemberNickByUserId(String userId);
 }

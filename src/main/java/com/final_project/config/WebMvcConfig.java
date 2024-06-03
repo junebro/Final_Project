@@ -30,6 +30,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/uploads/**")
-                .addResourceLocations("file:///c:/greenlife/image/");
+                .addResourceLocations("file:///D:/final-project-react/src/images/board/");
     }
 }

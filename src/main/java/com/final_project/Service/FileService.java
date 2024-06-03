@@ -19,7 +19,6 @@ public class FileService {
     private String imageUploadDir;
     private static final Logger logger = LoggerFactory.getLogger(FileService.class);
 
-
     // 이미지 파일 업로드
     public String uploadFile(MultipartFile file) throws IOException {
         if (file.isEmpty()) {
@@ -37,7 +36,6 @@ public class FileService {
 
         // 파일 저장
         file.transferTo(destinationPath);
-
         logger.info("File uploaded to: {}", destinationPath);
 
         return filename; // 저장된 파일의 이름을 반환
@@ -50,7 +48,6 @@ public class FileService {
         Path thumbnailPath = Paths.get(imageUploadDir).resolve(thumbnailFilename).normalize().toAbsolutePath();
 
         if (!Files.exists(destinationPath)) {
-
             throw new IOException("Could not find file: " + destinationPath);
         }
 

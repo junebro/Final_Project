@@ -223,20 +223,29 @@ public class BoardController {
         }
     }
 
-    // 좋아요 업데이트
+    // 좋아요
     @PostMapping("/likes/{bono}")
-    public ResponseEntity<?> updateLikes(@PathVariable("bono") Integer bono, @RequestBody Map<String, Object> payload) {
+    public ResponseEntity<?> toggleLike(@PathVariable("bono") Integer bono) {
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Integer memNo = memberService.findMemNoByUserId(userDetails.getUsername());
+        if (memNo == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Member not found");
+        }
+
+        boolean alreadyLiked = bs.checkLike(bono, memNo);
         try {
-            boolean increase = Boolean.parseBoolean(payload.get("liked").toString());
-            int updateResult = bs.updateLikeCount(bono, increase);
-            if (updateResult == 1) {
-                return ResponseEntity.ok("Like updated successfully");
+            if(!alreadyLiked) {
+                bs.addLike(bono, memNo);
+                return ResponseEntity.ok("Like added successfully");
             } else {
-                throw new Exception("Failed to update likes");
+                bs.removeLike(bono, memNo);
+                return ResponseEntity.ok("Like removed successfully");
             }
         } catch (Exception e) {
-            logger.error("Error updating likes for bono: {}", bono, e);
+            logger.error("Error updating likes", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error processing your request");
         }
     }
+
+
 }

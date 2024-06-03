@@ -132,16 +132,20 @@ public class BoardService {
         }
     }
 
-    // 좋아요 수 업데이트
+    // 좋아요 상태 체크
+    public boolean checkLike(Integer bono, Integer memNo) {
+        return bmi.checkLike(bono, memNo) > 0;
+    }
+
+    // 좋아요 추가
     @Transactional
-    public int updateLikeCount(Integer bono, boolean increase) {
-        int increment = increase ? 1 : -1;
-        int result = bmi.updateLikeCount(bono, increment);
-        if (result == 0) {
-            logger.error("Failed to update like count for bono: {}", bono);
-        } else {
-            logger.info("Successfully updated like count for bono: {}", bono);
-        }
-        return result;
+    public boolean addLike(Integer bono, Integer memNo) {
+        return bmi.addLike(bono, memNo) > 0;
+    }
+
+    // 좋아요 취소
+    @Transactional
+    public boolean removeLike(Integer bono, Integer memNo) {
+        return bmi.removeLike(bono, memNo) > 0;
     }
 }
