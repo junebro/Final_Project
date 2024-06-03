@@ -23,4 +23,9 @@ public class CartService {
     public int Delete(CartDTO cart) {
         return cmi.Delete(cart);
     }
+
+    /* 식단 추천에서 저장시킴 */
+    public void insertCartItems(List<CartDTO> cartItems) {
+        cmi.insertCartItems(cartItems);
+    }
 }
