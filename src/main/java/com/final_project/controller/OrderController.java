@@ -38,11 +38,8 @@ public class OrderController {
     @PostMapping("/complete")
     public ResponseEntity<?> completeOrder(@RequestBody CompleteOrderRequest completeOrderRequest) {
 
-        System.out.println("121231231");
         String paymentKey = completeOrderRequest.getPaymentKey();
         List<OrderDetailDTO> detailData = completeOrderRequest.getDetailData();
-        System.out.println("11111111111111111111");
-        System.out.println(completeOrderRequest.getMemno());
 
         int memno = completeOrderRequest.getMemno();
 

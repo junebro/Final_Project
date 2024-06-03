@@ -18,8 +18,7 @@ public class OrderService {
     private OrderMapperInterface omi;
 
     public OrderDTO createOrder(OrderDTO order) {
-        System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-        System.out.println(order);
+
         // 고객 번호 가져오기
         int memno = order.getMemno();
         // 현재 날짜 가져오기

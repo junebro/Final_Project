@@ -40,7 +40,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/check/**").permitAll()
 
                 .antMatchers("/board/**", "/cart/**", "/diary/**", "/products/**", "/uploads/**").permitAll()
-                .antMatchers("/orders/**", "/payment/**").hasRole("USER")
+                .antMatchers("/orders/**", "/payment/**", "/nutrition/**").hasRole("USER")
 
                 .antMatchers("/board/**", "/cart/**", "/diary/**", "/products/**", "/nutri/**").permitAll()
                 .antMatchers("/orders/**", "/payment/**", "/diet/**").hasRole("USER")
