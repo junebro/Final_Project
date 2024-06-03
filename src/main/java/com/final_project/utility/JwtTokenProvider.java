@@ -80,8 +80,6 @@ public class JwtTokenProvider {
         } catch (Exception e) {
             throw new RuntimeException("토큰 파싱 중 오류가 발생했습니다.", e);
         }
-        System.out.println("getAuthentication");
-        System.out.println(claims);
         String authInfo = claims.get("auth", String.class);
 
         if (authInfo == null) {
