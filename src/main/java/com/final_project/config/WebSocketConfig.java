@@ -1,7 +1,5 @@
 package com.final_project.config;
 
-import com.final_project.filter.JwtWebSocketFilter;
-import com.final_project.utility.JwtTokenProvider;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
@@ -13,21 +11,13 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     // WebSocketMessageBrokerConfigurer : 이 인터페이스를 구현하여 WebSocket 관련 설정을 정의할 수 있다.
 
-    private final JwtTokenProvider jwtTokenProvider;
-
-    public WebSocketConfig(JwtTokenProvider jwtTokenProvider) {
-        this.jwtTokenProvider = jwtTokenProvider;
-    }
-
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/userchat")
                 .setAllowedOrigins("http://localhost:3000")
-                .addInterceptors(new JwtWebSocketFilter(jwtTokenProvider))
                 .withSockJS();
         registry.addEndpoint("/adminchat")
                 .setAllowedOrigins("http://localhost:3000")
-                .addInterceptors(new JwtWebSocketFilter(jwtTokenProvider))
                 .withSockJS();
     }
     // registerStompEndpoints(StompEndpointRegistry registry) : 클라이언트가 웹소켓에 연결할 엔드포인트를 등록한다.
