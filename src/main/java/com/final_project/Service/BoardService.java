@@ -113,12 +113,20 @@ public class BoardService {
         return result;
     }
 
-    //게시물 삭제
-    public int Delete(Integer bono) {
-        logger.info("Deleting board with ID: {}", bono);
-        int result = bmi.Delete(bono);
-        logger.info("Delete result for board ID {}: {}", bono, result);
-        return result;
+    // 게시물 삭제
+    @Transactional
+    public void deleteBoard(Integer bono) {
+        // 좋아요 먼저 삭제
+        bmi.deleteLikesByBono(bono);
+        logger.info("Successfully deleted likes for bono: {}", bono);
+
+        // 게시물 삭제
+        int result = bmi.deleteBoard(bono);
+        if (result == 0) {
+            logger.error("Failed to delete board with bono: {}", bono);
+            throw new RuntimeException("Failed to delete board");
+        }
+        logger.info("Successfully deleted board with bono: {}", bono);
     }
 
     // 조회수 업데이트 메소드
@@ -137,15 +145,42 @@ public class BoardService {
         return bmi.checkLike(bono, memNo) > 0;
     }
 
+    // 사용자 좋아요 상태 확인
+    public boolean checkUserLike(Integer bono, Integer memNo) {
+        return bmi.checkUserLike(bono, memNo) > 0;
+    }
+
     // 좋아요 추가
     @Transactional
     public boolean addLike(Integer bono, Integer memNo) {
-        return bmi.addLike(bono, memNo) > 0;
+        boolean added = bmi.addLike(bono, memNo) > 0;
+        if (added) {
+            int updateCount = bmi.increaseLikeCount(bono);  // 좋아요 수 증가
+            if (updateCount == 0) {
+                logger.error("Failed to increase like count for bono: {}", bono);
+                throw new RuntimeException("Failed to update like count");
+            }
+            logger.info("Successfully increased like count for bono: {}, updateCount: {}", bono, updateCount);
+        } else {
+            logger.error("Failed to add like for bono: {}", bono);
+        }
+        return added;
     }
 
     // 좋아요 취소
     @Transactional
     public boolean removeLike(Integer bono, Integer memNo) {
-        return bmi.removeLike(bono, memNo) > 0;
+        boolean removed = bmi.removeLike(bono, memNo) > 0;
+        if (removed) {
+            int updateCount = bmi.decreaseLikeCount(bono);  // 좋아요 수 감소
+            if (updateCount == 0) {
+                logger.error("Failed to decrease like count for bono: {}", bono);
+                throw new RuntimeException("Failed to update like count");
+            }
+            logger.info("Successfully decreased like count for bono: {}, updateCount: {}", bono, updateCount);
+        } else {
+            logger.error("Failed to remove like for bono: {}", bono);
+        }
+        return removed;
     }
 }
