@@ -27,6 +27,13 @@ public interface CartMapperInterface {
     int Delete(@Param("cart") CartDTO cart);
 
     /* 식단 추천에서 저장시킴 */
-    @Insert("INSERT INTO tcrt (mbrno, crtcd, crtqt) VALUES (#{cartItems.mbrno}, #{cartItems.crtcd}, #{cartItems.crtqt})")
-    void insertCartItems(List<CartDTO> cartItems);
+    @Insert({
+            "<script>",
+            "INSERT INTO tcrt (mbrno, crtcd, crtqt) VALUES ",
+            "<foreach collection='cartItems' item='item' index='index' separator=','>",
+            "(#{item.mbrno}, #{item.crtcd}, #{item.crtqt})",
+            "</foreach>",
+            "</script>"
+    })
+    void insertCartItems(@Param("cartItems") List<CartDTO> cartItems);
 }
