@@ -8,6 +8,7 @@ import lombok.ToString;
 @Setter
 @ToString
 public class MessageDTO {
-    private String messagetext; // 메시지 내용
-    private int senderMemNo;    // 발신자 회원 번호
+    private String messagetext;  // 메시지 내용
+    private int senderMemNo;     // 발신자 회원 번호
+    private int receiverMemNo;   // 수신자 회원 번호
 }

@@ -51,25 +51,36 @@ public class ChatController {
             return;
         }
 
-        Integer memNo = Integer.parseInt(authentication.getName()); // assuming username contains memNo
-        if (memNo == null) {
-            log.error("Member number (memNo) is null");
-            return;
-        }
+        Integer senderMemNo = Integer.parseInt(authentication.getName()); // 발신자 번호 추출
+        Integer receiverMemNo = message.getReceiverMemNo(); // 메시지 객체에서 수신자 번호를 추출
 
         log.info("Received message from client: {}", message);
         MessageDTO messageDTO = new MessageDTO();
         messageDTO.setMessagetext(message.getMessageText());
-        messageDTO.setSenderMemNo(memNo);
+        messageDTO.setSenderMemNo(senderMemNo);
+        messageDTO.setReceiverMemNo(receiverMemNo);
 
         messageService.saveMessage(messageDTO);
-        messagingTemplate.convertAndSend("/topic/messages", message);
+
+        // 수신자의 sessionId 찾기
+        String sessionID = findSessionIdByMemberNo(receiverMemNo);
+        if (sessionID != null) {
+            messagingTemplate.convertAndSendToUser(sessionID, "/queue/reply", message);
+        }
+    }
+
+    private String findSessionIdByMemberNo(Integer memNo) {
+        return sessionAuthMap.entrySet().stream()
+                .filter(entry -> entry.getValue().getName().equals(String.valueOf(memNo)))
+                .map(Map.Entry::getKey)
+                .findFirst()
+                .orElse(null);
     }
 
     public static class ChatMessage {
         private String messageText;
+        private Integer receiverMemNo; // 추가된 필드: 수신자 번호
 
-        // getter and setter
         public String getMessageText() {
             return messageText;
         }
@@ -78,9 +89,17 @@ public class ChatController {
             this.messageText = messageText;
         }
 
+        public Integer getReceiverMemNo() {
+            return receiverMemNo;
+        }
+
+        public void setReceiverMemNo(Integer receiverMemNo) {
+            this.receiverMemNo = receiverMemNo;
+        }
+
         @Override
         public String toString() {
-            return "ChatMessage{messageText='" + messageText + "'}";
+            return "ChatMessage{messageText='" + messageText + "', receiverMemNo=" + receiverMemNo + "}";
         }
     }
 }

@@ -11,23 +11,24 @@ public class MessageService {
 
     private final MessageMapperInterface messageMapper;
 
-    // 의존성 주입을 통해 MessageMapperInterface를 연결합니다.
     public MessageService(MessageMapperInterface messageMapper) {
         this.messageMapper = messageMapper;
     }
 
-    // 메시지 저장 로직
     @Transactional
     public void saveMessage(MessageDTO message) {
         messageMapper.insertMessage(message);
     }
 
-    // 특정 사용자에 의해 보낸 모든 메시지 조회
     public List<MessageDTO> getMessagesBySenderMemNo(int senderMemNo) {
         return messageMapper.findAllMessagesBySenderMemNo(senderMemNo);
     }
 
-    // 모든 메시지 조회
+    // 메서드 추가: 특정 사용자에 의해 받은 모든 메시지 조회
+    public List<MessageDTO> getMessagesByReceiverMemNo(int receiverMemNo) {
+        return messageMapper.findAllMessagesByReceiverMemNo(receiverMemNo);
+    }
+
     public List<MessageDTO> getAllMessages() {
         return messageMapper.findAllMessages();
     }

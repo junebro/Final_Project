@@ -24,10 +24,17 @@ public class MessageController {
         return ResponseEntity.ok("Message saved successfully");
     }
 
-    // 특정 사용자의 모든 메시지 조회 API
+    // 특정 사용자의 모든 발신 메시지 조회 API
     @GetMapping("/sender/{senderMemNo}")
     public ResponseEntity<List<MessageDTO>> getMessagesBySenderMemNo(@PathVariable int senderMemNo) {
         List<MessageDTO> messages = messageService.getMessagesBySenderMemNo(senderMemNo);
+        return ResponseEntity.ok(messages);
+    }
+
+    // 특정 사용자의 모든 수신 메시지 조회 API
+    @GetMapping("/receiver/{receiverMemNo}")
+    public ResponseEntity<List<MessageDTO>> getMessagesByReceiverMemNo(@PathVariable int receiverMemNo) {
+        List<MessageDTO> messages = messageService.getMessagesByReceiverMemNo(receiverMemNo);
         return ResponseEntity.ok(messages);
     }
 
