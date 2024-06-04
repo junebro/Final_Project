@@ -34,7 +34,7 @@ public interface MypageMapperInterface {
             "LEFT OUTER JOIN tors B ON A.ordno = B.ordno\n" +
             "LEFT OUTER JOIN tpro C ON B.procd = C.procd\n" +
             "WHERE memno = ${userNo};")
-    List<MypageDTO> SelectOrderAll(@Param("userNo")String userNo);
+    List<OrderDTO> SelectOrderAll(@Param("userNo")String userNo);
 
     @Update("UPDATE tmem SET session_fl = 'D' WHERE memno =#{userNo}; ")
     void DeleteMem(String userNo);
