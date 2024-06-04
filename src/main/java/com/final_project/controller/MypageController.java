@@ -67,4 +67,14 @@ public class MypageController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
+
+    @GetMapping(value = "/deletemem/{userNo}")
+    public ResponseEntity<?> SelectMem(@PathVariable String userNo) {
+        try {
+            mypagemi.DeleteMem(userNo);
+            return ResponseEntity.ok("정상적으로 탈퇴가 되었습니다.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error processing your request: " + e.getMessage());
+        }
+    }
 }

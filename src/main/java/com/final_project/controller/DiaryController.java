@@ -30,10 +30,6 @@ public class DiaryController {
             List<Diary> diaryList = ds.SelectAll(userNo);
             List<Diary> diaryDate = ds.SelectDate(userNo);
 
-
-            System.out.println(diaryList);
-            System.out.println(diaryDate);
-
             Map<String, Object> response = new HashMap<>();
 
             response.put("diaryList", diaryList);
@@ -63,7 +59,6 @@ public class DiaryController {
     @PostMapping("/diaryInsert")
     public ResponseEntity<?> createBoard(@RequestBody Diary diary) {
 
-        System.out.println(diary);
         try {
             // 비즈니스 로직 실행
             int cnt = ds.Insert(diary);

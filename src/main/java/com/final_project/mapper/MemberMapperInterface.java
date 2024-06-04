@@ -21,7 +21,7 @@ public interface MemberMapperInterface {
     int countByNick(@Param("memberNick") String memberNick);
 
     // 회원 가입 여부 체크
-    @Select("SELECT * FROM TMEM WHERE mememail = #{email}")
+    @Select("SELECT * FROM TMEM WHERE mememail = #{email} AND session_fl IS NULL ")
     MemberDTO findByEmail(String email);
 
     // 내 정보 조회
