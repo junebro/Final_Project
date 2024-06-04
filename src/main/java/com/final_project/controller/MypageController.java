@@ -4,6 +4,7 @@ import com.final_project.Service.DiaryService;
 import com.final_project.Service.MypageService;
 import com.final_project.dto.MemberDTO;
 import com.final_project.dto.MypageDTO;
+import com.final_project.dto.OrderDTO;
 import com.final_project.entity.Diary;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -55,16 +56,19 @@ public class MypageController {
 
     // 주문내역 조회
     @GetMapping(value = "/myOrderList/{userNo}")
-    public ResponseEntity<?> SelectOrderAll(@PathVariable String userNo) {
-        System.out.println("작성글 조회 : " + userNo);
+    public ResponseEntity<?> selectOrderAll(@PathVariable String userNo) {
+        System.out.println("주문내역 조회 : " + userNo);
         try {
-
-            List<MypageDTO> myOrderList = mypagemi.SelectOrderAll(userNo);
+            List<OrderDTO> myOrderList = mypagemi.SelectOrderAll(userNo);
+            System.out.println(myOrderList);
+            if (myOrderList.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No orders found");
+            }
             return ResponseEntity.ok(myOrderList);
 
         } catch (Exception e) {
             logger.error("작성글 목록을 가져오는 데 실패했습니다.", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 

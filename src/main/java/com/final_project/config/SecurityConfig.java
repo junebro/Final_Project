@@ -35,6 +35,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .cors()
                 .and()
                 .authorizeRequests()
+                .antMatchers("/userchat/**").permitAll()
                 .antMatchers("/join/**").permitAll()
                 .antMatchers("/check/**").permitAll()
 
@@ -56,6 +57,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .and()
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
+
+        // 필터 체인에서 WebSocket 경로를 예외 처리
+//        http
+//                .requestMatchers()
+//                .antMatchers("/userchat/**")  // 웹소켓 경로에 대한 필터 예외 처리
+//                .and()
+//                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
     }
 
     @Bean

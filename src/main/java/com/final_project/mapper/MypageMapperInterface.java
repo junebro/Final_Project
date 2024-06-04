@@ -2,6 +2,7 @@ package com.final_project.mapper;
 
 import com.final_project.dto.MemberDTO;
 import com.final_project.dto.MypageDTO;
+import com.final_project.dto.OrderDTO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -28,10 +29,10 @@ public interface MypageMapperInterface {
     List<MypageDTO> SelectLike(@Param("userNo")String userNo);
 
     // 마이페이지 - 주문내역 조회
-    @Select("SELECT A.ordno, A.memno, A.ordpr, A.orddt, B.procd, B.crtqt, C.pronm, C.propr, C.proimg\n" +
+    @Select("SELECT A.ordno, A.memno, A.ordpr, A.orddt, B.procd, B.crtqt, C.pronm, C.propr, C.proimg, C.propr\n" +
             "FROM TORD A\n" +
-            "LEFT OUTER JOIN tors B ON A.ORDNO = B.ORDNO\n" +
-            "LEFT OUTER JOIN tpro C ON B.PROCD = C.PROCD\n" +
+            "LEFT OUTER JOIN tors B ON A.ordno = B.ordno\n" +
+            "LEFT OUTER JOIN tpro C ON B.procd = C.procd\n" +
             "WHERE memno = ${userNo};")
     List<MypageDTO> SelectOrderAll(@Param("userNo")String userNo);
 

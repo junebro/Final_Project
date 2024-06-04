@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.ui.Model;
@@ -81,21 +82,25 @@ public class BoardController {
                                          @RequestPart(value ="file2", required = false) MultipartFile file2,
                                          @RequestPart(value="file3", required = false) MultipartFile file3) {
         try {
-            // 현재 인증된 사용자 정보 가져오기
-            UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            String userId = userDetails.getUsername();  // 사용자 ID가 반환됨
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            if (authentication == null || !(authentication.getPrincipal() instanceof UserDetails)) {
+                logger.error("Authentication object was null or not an instance of UserDetails");
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Authentication failed");
+            }
 
-            // 사용자 ID를 이용하여 memNo 조회
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            String userId = userDetails.getUsername();
+            logger.info("Logged in userId: {}", userId);
+
             Integer memNo = memberService.findMemNoByUserId(userId);
             if (memNo == null) {
-                logger.error("No member found with userId: {}", userId);
+                logger.error("No member number found for userId: {}", userId);
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Member not found");
             }
 
             // BoardDTO 설정
             boardDto.setMemNo(memNo.toString());
             logger.info("Setting memNo for the board: {}", memNo);
-
 
             // 파일 배열 생성
             MultipartFile[] files = {file1, file2, file3};
@@ -209,24 +214,42 @@ public class BoardController {
 
     // 게시물 삭제
     @DeleteMapping(value = "/boardDelete/{bono}")
-    public ResponseEntity<?> Delete(@PathVariable("bono") Integer bono){
+    public ResponseEntity<?> deleteBoard(@PathVariable("bono") Integer bono) {
         try {
-            int cnt = bs.Delete(bono);
-            if(cnt == 1){
-                return ResponseEntity.ok("Delete successful");
-            } else {
-                throw new Exception("Delete failed");
-            }
+            bs.deleteBoard(bono);
+            return ResponseEntity.ok("Delete successful");
         } catch (Exception e) {
-            logger.error("게시물 삭제 중 오류가 발생했습니다.", e);
+            logger.error("Error occurred while deleting board with ID: {}", bono, e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error processing your request");
         }
+    }
+    // 사용자가 특정 게시물에 대해 좋아요를 눌렀는지 확인
+    @GetMapping("/likes/{bono}/status")
+    public ResponseEntity<?> checkUserLikeStatus(@PathVariable("bono") Integer bono) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !(authentication.getPrincipal() instanceof UserDetails)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Authentication failed");
+        }
+
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        Integer memNo = memberService.findMemNoByUserId(userDetails.getUsername());
+        if (memNo == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Member not found");
+        }
+
+        boolean liked = bs.checkUserLike(bono, memNo);
+        return ResponseEntity.ok(liked);
     }
 
     // 좋아요
     @PostMapping("/likes/{bono}")
     public ResponseEntity<?> toggleLike(@PathVariable("bono") Integer bono) {
-        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !(authentication.getPrincipal() instanceof UserDetails)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Authentication failed");
+        }
+
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         Integer memNo = memberService.findMemNoByUserId(userDetails.getUsername());
         if (memNo == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Member not found");
@@ -234,7 +257,7 @@ public class BoardController {
 
         boolean alreadyLiked = bs.checkLike(bono, memNo);
         try {
-            if(!alreadyLiked) {
+            if (!alreadyLiked) {
                 bs.addLike(bono, memNo);
                 return ResponseEntity.ok("Like added successfully");
             } else {
@@ -246,6 +269,4 @@ public class BoardController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error processing your request");
         }
     }
-
-
 }
