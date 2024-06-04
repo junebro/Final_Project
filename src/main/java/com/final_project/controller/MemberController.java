@@ -89,11 +89,11 @@ public class MemberController {
     }
 
     @PostMapping("/member/login")
-    public JwtToken signIn(@RequestBody MemberDTO member) {
+    public ResponseEntity<?> signIn(@RequestBody MemberDTO member) {
 
         String username = member.getMemEmail();
         String password = member.getMemPw();
-        System.out.println(member.getMemtype());
+
         // 데이터베이스에서 사용자 정보를 불러오기
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
@@ -103,21 +103,15 @@ public class MemberController {
 
         // 입력된 비밀번호와 데이터베이스에 저장된 암호화된 비밀번호 비교
         String storedPassword = userDetails.getPassword();
-        System.out.println("입력된 비밀번호: " + password);
-        System.out.println("저장된 암호화된 비밀번호: " + storedPassword);
 
         if (passwordEncoder.matches(password, storedPassword)) {
-
             // Authentication 객체 생성
             Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-
             // JwtToken 생성
             JwtToken jwtToken = jwtTokenProvider.generateToken(authentication);
-            System.out.println(jwtToken);
-
-            return jwtToken;
+            return ResponseEntity.ok(jwtToken);
         } else {
-            throw new BadCredentialsException("Invalid password");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid password");
         }
     }
 

@@ -1,5 +1,6 @@
 package com.final_project.Service;
 
+import com.final_project.dto.MemberDTO;
 import com.final_project.dto.MypageDTO;
 import com.final_project.dto.OrderDTO;
 import com.final_project.entity.Diary;
@@ -27,5 +28,9 @@ public class MypageService {
     // 주문내역 조회 하는중
     public List<OrderDTO> SelectOrderAll(String userNo) {
         return mypagemi.SelectOrderAll(userNo);
+    }
+
+    public void DeleteMem(String userNo) {
+        mypagemi.DeleteMem(userNo);
     }
 }
